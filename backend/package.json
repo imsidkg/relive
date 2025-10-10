@@ -1,12 +1,21 @@
 {
   "name": "backend",
   "module": "index.ts",
-  "type": "module",
-  "private": true,
   "devDependencies": {
     "@types/bun": "latest"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5.9.3"
+  },
+  "private": true,
+  "scripts": {
+    "start": "bunx tsc -b && node dist/index.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.7.1",
+    "express": "^5.1.0",
+    "prisma": "^6.17.0"
   }
 }
