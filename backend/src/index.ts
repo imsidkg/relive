@@ -3,20 +3,38 @@ import cors from 'cors';
 import { serve } from 'inngest/express';
 import { inngest } from './inngest/client';
 import { testHelloWorld } from './inngest/functions';
+import { simpleAgentRun } from './inngest/simple-agent-run';
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
 // Expose Inngest's API
-app.use("/api/inngest", serve({ client: inngest, functions: [testHelloWorld] }));
+app.use(
+  '/api/inngest',
+  serve({ client: inngest, functions: [testHelloWorld, simpleAgentRun] }),
+);
 
-app.get("/test-trigger", async (req, res) => {
+app.get('/test-trigger', async (req, res) => {
   await inngest.send({
-    name: "test/hello.world",
-    data: { name: "From Test Trigger" },
+    name: 'test/hello.world',
+    data: { name: 'From Test Trigger' },
   });
-  res.send("Event sent!");
+  res.send('Event sent!');
+});
+
+// New endpoint to trigger the simple agent
+app.get('/test-agent', async (req, res) => {
+  const prompt = req.query.prompt as string;
+  if (!prompt) {
+    return res.status(400).send("Missing 'prompt' query parameter");
+  }
+
+  await inngest.send({
+    name: 'agent/simple.run',
+    data: { prompt },
+  });
+  res.send('Agent run event sent!');
 });
 
 app.listen(4000, () => {
