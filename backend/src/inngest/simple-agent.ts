@@ -34,5 +34,5 @@ export const simpleAgent = createAgent({
   name: "SImple tool agent",
   tools: [ listFiles],
   system: "You are a friendly agent that greets people.",
-  model : gemini({ model: 'gemini-2.5-pro' })
+  model : gemini({ model: 'gemini-1.5-flash' })
 });

@@ -1,11 +1,13 @@
-import express from "express";
-import cors from "cors";
 import { serve } from "inngest/express";
 import { inngest } from "./inngest/client";
-import { testHelloWorld } from "./inngest/functions";
-import { simpleAgentRun } from "./inngest/simple-agent-run";
+import { testHelloWorld, simpleAgentRun } from "./inngest/functions";
+import express from "express";
+import cors from "cors";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { appRouter } from "./router";
+import "zod-to-json-schema";
+import 'dotenv/config';
+
 
 const app = express();
 app.use(express.json());
@@ -17,6 +19,7 @@ app.use(
     router: appRouter,
   })
 );
+
 // Expose Inngest's API
 app.use(
   "/api/inngest",
