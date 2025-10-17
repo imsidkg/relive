@@ -40,6 +40,7 @@ export const appRouter = router({
 
       return {
         messageId: userMessage.id,
+        projectId: input.projectId,
       };
     }),
 });
