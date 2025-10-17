@@ -48,9 +48,38 @@ const readFiles = createTool({
   },
 });
 
+const executeCommand = createTool({
+  name: "executeCommand",
+  description:
+    "Executes a shell command in the sandbox terminal and returns its output.",
+  parameters: z.object({
+    command: z.string().describe("The shell command to execute."),
+  }),
+  handler: async ({ command }, { network }) => {
+    try {
+      const sandbox = await getSandbox(network);
+
+      const process = await sandbox.commands.run(command);
+
+      return {
+        stdout: process.stdout,
+        stderr: process.stderr,
+        exitCode: process.exitCode,
+      };
+    } catch (error: any) {
+      console.error(`Command failed to execute: ${command}`, error);
+      return {
+        stdout: "",
+        stderr: `Failed to execute command: ${error.message}`,
+        exitCode: 1,
+      };
+    }
+  },
+});
+
 export const simpleAgent = createAgent({
   name: "SImple tool agent",
-  tools: [listFiles, writeFiles , readFiles],
+  tools: [listFiles, writeFiles, readFiles, executeCommand],
   system: "An expert coding agent",
   model: gemini({
     model: "gemini-2.5-pro",
