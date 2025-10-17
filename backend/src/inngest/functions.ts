@@ -37,6 +37,7 @@
 import { inngest } from "./client";
 import { simpleAgent } from "./simple-agent";
 import { prisma } from "../lib/prisma";
+import { MessageRole, MessageType } from "@prisma/client";
 
 export const simpleAgentRun = inngest.createFunction(
   { id: "conversation-start" },
@@ -59,6 +60,17 @@ export const simpleAgentRun = inngest.createFunction(
         .join("\n");
 
       const result = await simpleAgent.run(allMessages, { step });
+      
+      const contentToSave = typeof result === 'string' ? result : JSON.stringify(result, null ,2)
+
+      await prisma.message.create({
+        data: {
+            content: contentToSave,
+            role : MessageRole.ASSISTANCE,
+            type: MessageType.RESULT,
+              projectId: projectId
+        }
+      })
 
       return result;
     } catch (error) {
