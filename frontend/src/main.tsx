@@ -8,6 +8,7 @@ import { ClerkProvider } from "@clerk/clerk-react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import SignInPage from "./pages/SignInPage";
+import { RootLayout } from "./components/layouts/RootLayout";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -26,12 +27,17 @@ const trpcClient = trpc.createClient({
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <HomePage />,
-  },
-  {
-    path: "/sign-in",
-    element: <SignInPage />,
+    element: <RootLayout />,
+    children: [
+      {
+        path: "/",
+        element: <HomePage />,
+      },
+      {
+        path: "/sign-in",
+        element: <SignInPage />,
+      },
+    ],
   },
 ]);
 
