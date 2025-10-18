@@ -5,14 +5,6 @@ import { MessageRole } from "@prisma/client";
 import { inngest } from "./inngest/client";
 
 export const appRouter = router({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `hello ${input.text}`,
-      };
-    }),
-
   sendMessage: publicProcedure
     .input(
       z.object({
@@ -42,6 +34,59 @@ export const appRouter = router({
         messageId: userMessage.id,
         projectId: input.projectId,
       };
+    }),
+
+  createProject: publicProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        userId: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const project = await prisma.project.create({
+        data: {
+          name: input.name,
+          userId: input.userId,
+        },
+      });
+      return project;
+    }),
+
+  getProjectById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input }) => {
+      const project = await prisma.project.findUniqueOrThrow({
+        where: {
+          id: input.id,
+        },
+      });
+      return project;
+    }),
+
+  listProjects: publicProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ input }) => {
+      const projects = await prisma.project.findMany({
+        where: {
+          userId: input.userId,
+        },
+      });
+      return projects;
+    }),
+
+  getMessages: publicProcedure
+    .input(z.object({ projectId: z.string() }))
+    .query(async ({ input }) => {
+      const messages = await prisma.message.findMany({
+        where: {
+          projectId: input.projectId,
+        },
+        orderBy: {
+          createdAt: 'asc',
+        },
+      });
+      return messages;
     }),
 });
 
