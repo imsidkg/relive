@@ -1,5 +1,4 @@
 // import { FlipWords } from "@/components/ui/flip-words";
-// import TypingAnimatedText from "@/modules/home/ui/components/AnimatedOutlinedBlock";
 // import PageLoading from "@/modules/home/ui/components/page-loader";
 // import ProjectForm from "@/modules/home/ui/components/project-form";
 // import { ProjectsList } from "@/modules/home/ui/components/projects-list";
@@ -8,8 +7,16 @@ import { Bot, HeartIcon } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
+import TypingAnimatedText from "@/modules/home/ui/components/TypingText";
+import { FlipWords } from "@/modules/home/ui/components/FlipText";
+import { Button } from "@/components/ui/button";
+import { useMutation } from "@tanstack/react-query";
+import { trpc } from "@/trpc";
+import { toast } from "sonner";
+import ProjectForm from "@/modules/home/ui/components/ProjectForm";
 const Page = () => {
   const [mounted, setMounted] = useState(false);
+  const [value, setValue] = useState("");
 
   useEffect(() => {
     setMounted(true);
@@ -20,6 +27,7 @@ const Page = () => {
     ease: [0, 0.71, 0.2, 1.01],
   };
   const words = ["beautiful", "modern ", "apps", "websites", "with", "no code"];
+
   return (
     <>
       {/* {mounted && <PageLoading />} */}
@@ -59,7 +67,7 @@ const Page = () => {
 
  */}
 
-            {/* <TypingAnimatedText /> */}
+            <TypingAnimatedText />
 
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -68,7 +76,7 @@ const Page = () => {
               className="text-lg md:text-xl text-muted-foreground text-center mb-2"
             >
               By chatting with AI Agent Create <br />{" "}
-              {/* <FlipWords words={words} /> */}
+              <FlipWords words={words} />
             </motion.div>
             <motion.div
               initial={{ scale: 0, y: 10 }}
@@ -76,7 +84,7 @@ const Page = () => {
               transition={{ duration: 1, delay: 1.5 }}
               className="max-w-3xl mx-auto w-full"
             >
-              {/* <ProjectForm /> */}
+              <ProjectForm />
             </motion.div>
           </section>
           {/* <ProjectsList /> */}
@@ -85,14 +93,14 @@ const Page = () => {
 
           {/* <div className=" flex justify-center mt-10 ml-0 mr-0  ">
             <b className="m-0 ">Built with</b> */}
-            {/* <DotLottieReact
+          {/* <DotLottieReact
           src="/animations/heart.lottie "
           loop
           autoplay
        
           className='w-30  m-0  animate-bounce'
         /> */}
-            {/* <span className=" m-0  animate-bounce "> ❤️</span>
+          {/* <span className=" m-0  animate-bounce "> ❤️</span>
             <b className="m-0 "> By Siddharth </b>{" "}
           </div> */}
           {/* </div> */}

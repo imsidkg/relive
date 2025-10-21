@@ -9,6 +9,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import SignInPage from "./pages/SignInPage";
 import { RootLayout } from "./components/layouts/RootLayout";
+import ProjectViewPage from "./pages/ProjectViewPage";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "/sign-in",
         element: <SignInPage />,
+      },
+      {
+        path: "/project/:projectId",
+        element: <ProjectViewPage />,
       },
     ],
   },

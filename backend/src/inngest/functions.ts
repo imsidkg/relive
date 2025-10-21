@@ -59,20 +59,52 @@ export const simpleAgentRun = inngest.createFunction(
         .map((m) => `${m.role}: ${m.content}`)
         .join("\n");
 
+
       const result = await simpleAgent.run(allMessages, { step });
+
       
-      const contentToSave = typeof result === 'string' ? result : JSON.stringify(result, null ,2)
+      // PROPOSED CHANGE: This block shows how to extract the URL and save it.
+      const contentToSave = typeof result === 'string' ? result : JSON.stringify(result, null, 2);
 
-      await prisma.message.create({
+      // Check for a preview URL in the agent's output
+      const urlRegex = /\[PREVIEW_URL\]\((.*?)\)/;
+      const match = contentToSave.match(urlRegex);
+      const previewUrl = match ? match[1] : null;
+
+      const newMessage = await prisma.message.create({
         data: {
-            content: contentToSave,
-            role : MessageRole.ASSISTANCE,
-            type: MessageType.RESULT,
-              projectId: projectId
-        }
-      })
+          content: contentToSave,
+          role: MessageRole.ASSISTANCE,
+          type: MessageType.RESULT,
+          projectId: projectId,
+        },
+      });
 
-      return result;
+      if (previewUrl) {
+        await prisma.fragment.create({
+          data: {
+            messageId: newMessage.id,
+            sandboxUrl: previewUrl,
+            title: "Live Preview",
+            file: {},
+          },
+        });
+      }
+      
+
+      // CURRENT IMPLEMENTATION:
+      // const contentToSave = typeof result === 'string' ? result : JSON.stringify(result, null ,2)
+
+      // await prisma.message.create({
+      //   data: {
+      //       content: contentToSave,
+      //       role : MessageRole.ASSISTANCE,
+      //       type: MessageType.RESULT,
+      //         projectId: projectId
+      //   }
+      // })
+
+      return previewUrl;
     } catch (error) {
       console.error(error);
       return `An error occurred while running the simple agent.`;

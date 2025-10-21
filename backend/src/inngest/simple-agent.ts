@@ -77,10 +77,27 @@ const executeCommand = createTool({
   },
 });
 
+const getPreviewURL = createTool({
+  name: "getPreviewURL",
+  description:
+    "Gets the public preview URL for the web application running in the sandbox on port 3000.",
+  parameters: z.object({}),
+  handler: async (parameters, { network }) => {
+    const sandbox = await getSandbox(network);
+    const url = sandbox.getHost(3000);
+    return url;
+  },
+});
+
 export const simpleAgent = createAgent({
   name: "SImple tool agent",
-  tools: [listFiles, writeFiles, readFiles, executeCommand],
-  system: "An expert coding agent",
+  tools: [listFiles, writeFiles, readFiles, executeCommand, getPreviewURL],
+  system: `An expert coding agent. 
+
+When you are asked to start a web server, you must run the command in the background (e.g. "bun run dev &"). 
+After starting the server, you MUST use the getPreviewURL tool to get the public URL and include it in your final response, formatted like this: 
+
+[PREVIEW_URL](https://example.com)`,
   model: gemini({
     model: "gemini-2.5-pro",
     apiKey: process.env.GEMINI_API_KEY!,

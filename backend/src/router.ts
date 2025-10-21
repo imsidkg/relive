@@ -82,6 +82,9 @@ export const appRouter = router({
         where: {
           projectId: input.projectId,
         },
+        include: {
+          fragment: true,
+        },
         orderBy: {
           createdAt: 'asc',
         },
