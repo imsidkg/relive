@@ -9,7 +9,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import SignInPage from "./pages/SignInPage";
 import { RootLayout } from "./components/layouts/RootLayout";
-import ProjectView from "./pages/ProjectView";
+import { ProjectView } from "./modules/home/ui/components/ProjectView";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 

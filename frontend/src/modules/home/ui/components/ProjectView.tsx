@@ -21,12 +21,17 @@ import ErrorFallback from "@/app/error";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 
-interface props {
-  projectId: string;
-}
+import { useParams } from "react-router-dom";
 
-export const ProjectView = ({ projectId }: props) => {
+interface props {}
+
+export const ProjectView = () => {
+  const { projectId } = useParams<{ projectId: string }>();
   const [buttonEnabled, setButtonEnabled] = useState(false);
+
+  if (!projectId) {
+    return <div>Project Not Found</div>;
+  }
 
   const [activeFragment, setactiveFragment] = useState<Fragment | null>(null);
   const [tabState, setTabState] = useState<"preview" | "code">("preview");
