@@ -4,7 +4,6 @@ import {
   ResizablePanelGroup,
   ResizablePanel,
 } from "@/components/ui/resizable";
-import MessagesContainer from "../components/messages_container";
 import { Suspense, useState } from "react";
 import ProjectHeader from "../components/project-header";
 import FragmentWeb from "../components/fragmentweb";
@@ -22,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 
 import { useParams } from "react-router-dom";
+import MessagesContainer from "./MessageContainer";
 
 interface props {}
 

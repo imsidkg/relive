@@ -89,7 +89,7 @@ export const appRouter = router({
           createdAt: 'asc',
         },
       });
-      return messages;
+      return messages ;
     }),
 });
 
