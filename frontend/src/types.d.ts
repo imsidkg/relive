@@ -1,11 +1,12 @@
-export enum MessageRole {
-  USER = 'USER',
-  ASSISTANCE = 'ASSISTANCE',
+export interface MessageRole {
+    role : 'USER' | 'ASSISTANCE'
+  USER : 'USER',
+  ASSISTANCE : 'ASSISTANCE',
 }
 
-export enum MessageType {
-  RESULT = 'RESULT',
-  ERROR = 'ERROR',
+export interface MessageType {
+  type : 'RESULT' | 'ERROR',
+//   ERROR : 'ERROR',
 }
 
 export interface Message {
