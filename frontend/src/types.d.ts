@@ -1,13 +1,6 @@
-export interface MessageRole {
-    role : 'USER' | 'ASSISTANCE'
-  USER : 'USER',
-  ASSISTANCE : 'ASSISTANCE',
-}
+export type MessageRole = 'USER' | 'ASSISTANCE';
 
-export interface MessageType {
-  type : 'RESULT' | 'ERROR',
-//   ERROR : 'ERROR',
-}
+export type MessageType = 'RESULT' | 'ERROR';
 
 export interface Message {
   id: string;

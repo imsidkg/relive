@@ -2,6 +2,7 @@ import { trpc } from "@/trpc";
 import type { Fragment, Message } from "@/types";
 import { useEffect, useRef } from "react";
 import MessageCard from "./MessageCard";
+import { MessageLoading } from "./MessageLoading";
 
 interface props {
   projectId: string;
@@ -57,18 +58,19 @@ const MessagesContainer = ({
     <div className="flex flex-col flex-1 min-h-0">
       <div className="flex-1 min-h-0 overflow-y-auto">
         <div className="pt-2 pr-1">
-          {messages && messages.map((message) => (
-            <MessageCard
-              key={message.id}
-              content={message.content}
-              role={message.role}
-              fragment={message.fragment}
-              createdAt={message.createdAt}
-              isActiveFragment={activeFragment?.id === message.fragment?.id}
-              onFragmentClick={() => setActiveFragment(message.fragment)}
-              type={message.type}
-            />
-          ))}
+          {messages &&
+            messages.map((message) => (
+              <MessageCard
+                key={message.id}
+                content={message.content}
+                role={message.role}
+                fragment={message.fragment}
+                createdAt={message.createdAt}
+                isActiveFragment={activeFragment?.id === message.fragment?.id}
+                onFragmentClick={() => setActiveFragment(message.fragment)}
+                type={message.type}
+              />
+            ))}
           {isLastMessageUser && <MessageLoading />}
           <div ref={buttonRef} />
         </div>

@@ -8,7 +8,7 @@ interface MessageCardPrpos {
   content: string;
   role: MessageRole;
   fragment: Fragment | null;
-  createdAt: Date;
+  createdAt: string;
   isActiveFragment: boolean;
   onFragmentClick: (fragment: Fragment) => void;
   type: MessageType;
@@ -21,7 +21,7 @@ interface UserMessageProps {
 interface AssistanceMessageProps {
   content: string;
   fragment: Fragment | null;
-  createdAt: Date;
+  createdAt: string;
   isActiveFragment: boolean;
   onFragmentClick: (fragment: Fragment) => void;
   type: MessageType;
@@ -85,7 +85,7 @@ const AssistanceMessage = ({
     <div
       className={cn(
         "flex flex-col group px-2 pb-4",
-        type.type === "ERROR" && "text-red-700 dark:text-red-500"
+        type === "ERROR" && "text-red-700 dark:text-red-500"
       )}
     >
       <div className="flex items-center gap-2 pl-2 mb-2">
@@ -105,13 +105,13 @@ const AssistanceMessage = ({
 
         <p className="text-s font-semibold">Codey</p>
         <span className="text-xs text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100">
-          {format(createdAt, "HH:mm ' on' MMM dd , yyy")}
+          {format(new Date(createdAt), "HH:mm ' on' MMM dd , yyy")}
         </span>
       </div>
       <div className="pl-8.5 flex flex-col gap-y-4">
         <span>{content}</span>
 
-        {fragment && type.type === "RESULT" && (
+        {fragment && type === "RESULT" && (
           <FragmentCard
             fragment={fragment}
             isActiveFragment={isActiveFragment}
@@ -132,7 +132,7 @@ const MessageCard = ({
   onFragmentClick,
   type,
 }: MessageCardPrpos) => {
-  if (role.role === "ASSISTANCE") {
+  if (role === "ASSISTANCE") {
     return (
       <AssistanceMessage
         content={content}
