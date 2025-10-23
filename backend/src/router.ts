@@ -86,10 +86,10 @@ export const appRouter = router({
           fragment: true,
         },
         orderBy: {
-          createdAt: 'asc',
+          createdAt: "asc",
         },
       });
-      return messages ;
+      return messages;
     }),
 });
 

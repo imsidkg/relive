@@ -3,6 +3,7 @@ import type { Fragment, Message } from "@/types";
 import { useEffect, useRef } from "react";
 import MessageCard from "./MessageCard";
 import { MessageLoading } from "./MessageLoading";
+import { MessageForm } from "./MessageForm";
 
 interface props {
   projectId: string;
