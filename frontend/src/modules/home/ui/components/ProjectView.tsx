@@ -5,12 +5,10 @@ import {
   ResizablePanel,
 } from "@/components/ui/resizable";
 import { Suspense, useState } from "react";
-import FragmentWeb from "../components/fragmentweb";
-import { Fragment } from "@/generated/prisma";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { Code2Icon, CrownIcon, EyeIcon, SeparatorVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import {Link} from "react-router-dom";
 import FileExplorer from "@/components/file-explorer";
 import { UserControl } from "@/components/user-control";
 import { useAuth } from "@clerk/nextjs";
@@ -22,6 +20,8 @@ import { motion } from "motion/react";
 import { useParams } from "react-router-dom";
 import MessagesContainer from "./MessageContainer";
 import ProjectHeader from "./ProjectHeader";
+import FragmentWeb from "./FragmentWeb";
+import type { Fragment } from "@/types";
 
 interface props {}
 
