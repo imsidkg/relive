@@ -5,7 +5,6 @@ import {
   ResizablePanel,
 } from "@/components/ui/resizable";
 import { Suspense, useState } from "react";
-import ProjectHeader from "../components/project-header";
 import FragmentWeb from "../components/fragmentweb";
 import { Fragment } from "@/generated/prisma";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
@@ -22,6 +21,7 @@ import { motion } from "motion/react";
 
 import { useParams } from "react-router-dom";
 import MessagesContainer from "./MessageContainer";
+import ProjectHeader from "./ProjectHeader";
 
 interface props {}
 

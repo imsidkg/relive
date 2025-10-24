@@ -1,8 +1,4 @@
-// import { FlipWords } from "@/components/ui/flip-words";
-// import PageLoading from "@/modules/home/ui/components/page-loader";
-// import ProjectForm from "@/modules/home/ui/components/project-form";
-// import { ProjectsList } from "@/modules/home/ui/components/projects-list";
-// import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+
 import { Bot, HeartIcon } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
