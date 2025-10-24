@@ -1,12 +1,12 @@
-export type MessageRole = 'USER' | 'ASSISTANCE';
+export type MessageRole = "USER" | "ASSISTANCE";
 
-export type MessageType = 'RESULT' | 'ERROR';
+export type MessageType = "RESULT" | "ERROR";
 
 export interface Message {
   id: string;
   content: string;
-  role: 'USER' | 'ASSISTANCE';
-  type: 'RESULT' | 'ERROR';
+  role: "USER" | "ASSISTANCE";
+  type: "RESULT" | "ERROR";
   createdAt: string;
   updatedAt: string;
   projectId: string;
@@ -18,7 +18,9 @@ export interface Fragment {
   messageId: string;
   sandboxUrl: string;
   title: string;
-  file: any; 
+  file: any;
   createdAt: string;
   updatedAt: string;
 }
+
+export type TreeItem = string | [string, ...TreeItem[]];

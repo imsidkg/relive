@@ -1,6 +1,5 @@
 import { Fragment, useCallback, useMemo, useState } from 'react';
 import { CopyCheckIcon, CopyIcon } from 'lucide-react';
-import CodeView from './code-view';
 import { convertFilesToTreeItems } from '@/lib/utils';
 import { TreeView } from './tree-view';
 import { Breadcrumb, 
@@ -12,6 +11,7 @@ import { Breadcrumb,
 import Hint from './Hint';
 import { Button } from '@/components/ui/button';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
+import CodeView from './code-view';
 
 
 
