@@ -9,7 +9,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { Code2Icon, CrownIcon, EyeIcon, SeparatorVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {Link} from "react-router-dom";
-import FileExplorer from "@/components/file-explorer";
 import { UserControl } from "@/components/user-control";
 import { useAuth } from "@clerk/nextjs";
 import { ErrorBoundary } from "react-error-boundary";
@@ -22,6 +21,7 @@ import MessagesContainer from "./MessageContainer";
 import ProjectHeader from "./ProjectHeader";
 import FragmentWeb from "./FragmentWeb";
 import type { Fragment } from "@/types";
+import FileExplorer from "./FileExplorer";
 
 interface props {}
 
@@ -100,7 +100,7 @@ export const ProjectView = () => {
 
               <div className="ml-auto flex items-center gap-x-2">
                 {!hasProAccess && (
-                  <Button asChild size="sm" variant="tertiary">
+                  <Button asChild size="sm" variant="secondary">
                     <Link href="/pricing">
                       <CrownIcon />
                       Upgrade
