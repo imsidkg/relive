@@ -1,7 +1,6 @@
 import { Fragment, useCallback, useMemo, useState } from 'react';
 import { CopyCheckIcon, CopyIcon } from 'lucide-react';
 import { convertFilesToTreeItems } from '@/lib/utils';
-import { TreeView } from './tree-view';
 import { Breadcrumb, 
     BreadcrumbEllipsis, 
     BreadcrumbItem, 
