@@ -1,6 +1,7 @@
-import { createAgent, createTool, gemini, Network } from "@inngest/agent-kit";
+import { createAgent, createTool, gemini } from "@inngest/agent-kit";
 import z from "zod";
 import { getSandbox } from "../lib/utils";
+import { PROMPT } from "../prompt";
 
 const listFiles = createTool({
   name: "listFiles",
@@ -92,12 +93,7 @@ const getPreviewURL = createTool({
 export const simpleAgent = createAgent({
   name: "SImple tool agent",
   tools: [listFiles, writeFiles, readFiles, executeCommand, getPreviewURL],
-  system: `An expert coding agent. 
-
-When you are asked to start a web server, you must run the command in the background (e.g. "bun run dev &"). 
-After starting the server, you MUST use the getPreviewURL tool to get the public URL and include it in your final response, formatted like this: 
-
-[PREVIEW_URL](https://example.com)`,
+  system: PROMPT,
   model: gemini({
     model: "gemini-2.5-pro",
     apiKey: process.env.GEMINI_API_KEY!,

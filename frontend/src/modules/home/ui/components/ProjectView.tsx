@@ -6,13 +6,13 @@ import {
 } from "@/components/ui/resizable";
 import { Suspense, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
-import { Code2Icon, CrownIcon, EyeIcon, SeparatorVertical } from "lucide-react";
+import { Code2Icon, CrownIcon, EyeIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {Link} from "react-router-dom";
-import { UserControl } from "@/components/user-control";
-import { useAuth } from "@clerk/nextjs";
+
+import { useAuth } from "@clerk/clerk-react";
 import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallback from "@/app/error";
+
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 
@@ -22,12 +22,12 @@ import ProjectHeader from "./ProjectHeader";
 import FragmentWeb from "./FragmentWeb";
 import type { Fragment } from "@/types";
 import FileExplorer from "./FileExplorer";
+import { UserControl } from "./UserControl";
+import ErrorFallback from "./Error";
 
-interface props {}
 
 export const ProjectView = () => {
   const { projectId } = useParams<{ projectId: string }>();
-  const [buttonEnabled, setButtonEnabled] = useState(false);
 
   if (!projectId) {
     return <div>Project Not Found</div>;
@@ -101,7 +101,7 @@ export const ProjectView = () => {
               <div className="ml-auto flex items-center gap-x-2">
                 {!hasProAccess && (
                   <Button asChild size="sm" variant="secondary">
-                    <Link href="/pricing">
+                    <Link to="/pricing">
                       <CrownIcon />
                       Upgrade
                     </Link>

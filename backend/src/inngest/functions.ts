@@ -35,79 +35,217 @@
 // );
 
 import { inngest } from "./client";
+
 import { simpleAgent } from "./simple-agent";
+
 import { prisma } from "../lib/prisma";
+
 import { MessageRole, MessageType } from "@prisma/client";
 
-export const simpleAgentRun = inngest.createFunction(
-  { id: "conversation-start" },
-  { event: "agent/conversation.start" },
-  async ({ event, step }) => {
-    const { messageId, projectId } = event.data;
+import { createAgent, gemini } from "@inngest/agent-kit";
 
-    try {
-      const project = await prisma.project.findUnique({
-        where: { id: projectId },
-        include: { messages: true },
-      });
-
-      if (!project) {
-        return `Unable to find project with the provided ID`;
-      }
-
-      const allMessages = project.messages
-        .map((m) => `${m.role}: ${m.content}`)
-        .join("\n");
+import { FRAGMENT_TITLE_PROMPT, RESPONSE_PROMPT } from "../prompt";
 
 
-      const result = await simpleAgent.run(allMessages, { step });
 
-      
-      // PROPOSED CHANGE: This block shows how to extract the URL and save it.
-      const contentToSave = typeof result === 'string' ? result : JSON.stringify(result, null, 2);
+// Helper function to parse the agent's final output
 
-      // Check for a preview URL in the agent's output
-      const urlRegex = /\[PREVIEW_URL\]\((.*?)\)/;
-      const match = contentToSave.match(urlRegex);
-      const previewUrl = match ? match[1] : null;
+const parseAgentOutput = (output: any): string => {
 
-      const newMessage = await prisma.message.create({
-        data: {
-          content: contentToSave,
-          role: MessageRole.ASSISTANCE,
-          type: MessageType.RESULT,
-          projectId: projectId,
-        },
-      });
+  if (output.type !== "text") {
 
-      if (previewUrl) {
-        await prisma.fragment.create({
-          data: {
-            messageId: newMessage.id,
-            sandboxUrl: previewUrl,
-            title: "Live Preview",
-            file: {},
-          },
-        });
-      }
-      
+    return "Fragment";
 
-      // CURRENT IMPLEMENTATION:
-      // const contentToSave = typeof result === 'string' ? result : JSON.stringify(result, null ,2)
-
-      // await prisma.message.create({
-      //   data: {
-      //       content: contentToSave,
-      //       role : MessageRole.ASSISTANCE,
-      //       type: MessageType.RESULT,
-      //         projectId: projectId
-      //   }
-      // })
-
-      return previewUrl;
-    } catch (error) {
-      console.error(error);
-      return `An error occurred while running the simple agent.`;
-    }
   }
+
+  if (Array.isArray(output.content)) {
+
+    return output.content.map((txt: any) => txt).join("");
+
+  } else {
+
+    return output.content;
+
+  }
+
+};
+
+
+
+export const simpleAgentRun = inngest.createFunction(
+
+  { id: "conversation-start" },
+
+  { event: "agent/conversation.start" },
+
+  async ({ event, step }) => {
+
+    const { projectId } = event.data;
+
+
+
+    const project = await prisma.project.findUnique({
+
+      where: { id: projectId },
+
+      include: { messages: { orderBy: { createdAt: "asc" } } },
+
+    });
+
+
+
+    if (!project) {
+
+      throw new Error(`Project with ID ${projectId} not found`);
+
+    }
+
+
+
+    const conversationHistory = project.messages
+
+      .map((m) => `${m.role}: ${m.content}`)
+
+      .join("\n\n");
+
+
+
+    const agentResult = await simpleAgent.run(conversationHistory, { step });
+
+
+
+    const agentContent = typeof agentResult === 'string' 
+
+      ? agentResult 
+
+      : JSON.stringify(agentResult, null, 2);
+
+
+
+    // Extract the summary from the agent's output
+
+    const summaryMatch = agentContent.match(/<task_summary>([\s\S]*?)<\/task_summary>/);
+
+    const summary = summaryMatch ? summaryMatch[1].trim() : "No summary provided.";
+
+
+
+    // Define post-processing agents
+
+    const fragmentTitleGenerator = createAgent({
+
+      name: "fragment-title-generator",
+
+            system: FRAGMENT_TITLE_PROMPT,
+
+model: gemini({ model: "gemini-2.5-pro" }),
+
+    });
+
+
+
+    const responseGenerator = createAgent({
+
+      name: "response-generator",
+
+      system: RESPONSE_PROMPT,
+
+      model: gemini({ model: "gemini-2.5-pro" }),
+
+    });
+
+
+
+    // Run post-processing agents
+
+    const { output: fragmentTitleOutput } = await fragmentTitleGenerator.run(summary);
+
+    const { output: responseOutput } = await responseGenerator.run(summary);
+
+
+
+    const finalTitle = parseAgentOutput(fragmentTitleOutput[0]);
+
+    const finalContent = parseAgentOutput(responseOutput[0]);
+
+
+
+    // Check for a preview URL in the agent's raw output
+
+    const urlRegex = /\[PREVIEW_URL\]\((.*?)\)/;
+
+    const urlMatch = agentContent.match(urlRegex);
+
+    const previewUrl = urlMatch ? urlMatch[1] : null;
+
+
+
+    const isError = !summary || summary === "No summary provided.";
+
+
+
+    if (isError) {
+
+      await prisma.message.create({
+
+        data: {
+
+          projectId: projectId,
+
+          content: "Something went wrong. Please try again.",
+
+          role: "ASSISTANCE",
+
+          type: "ERROR",
+
+        },
+
+      });
+
+      return { error: "Agent failed to provide a summary." };
+
+    }
+
+
+
+    // Save the final, polished result to the database
+
+    await prisma.message.create({
+
+      data: {
+
+        projectId: projectId,
+
+        content: finalContent,
+
+        role: MessageRole.ASSISTANCE,
+
+        type: MessageType.RESULT,
+
+        fragment: {
+
+          create: {
+
+            sandboxUrl: previewUrl || "",
+
+            title: finalTitle,
+
+            file: { summary: summary, rawOutput: agentContent },
+
+          },
+
+        },
+
+      },
+
+    });
+
+
+
+    return { success: true, title: finalTitle, content: finalContent };
+
+  }
+
 );
+
+

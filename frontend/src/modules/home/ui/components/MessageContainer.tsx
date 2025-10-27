@@ -7,8 +7,8 @@ import { MessageForm } from "./MessageForm";
 
 interface props {
   projectId: string;
-  activeFragment: Fragment;
-  setActiveFragment: (fragment: Fragment | null) => null;
+  activeFragment: Fragment | null;
+  setActiveFragment: (fragment: Fragment | null) => void;
 }
 
 const MessagesContainer = ({
