@@ -1,12 +1,39 @@
 import { Sandbox } from "@e2b/code-interpreter";
 import { NetworkRun } from "@inngest/agent-kit";
+import { TextMessage, AgentResult, Message } from "@inngest/agent-kit";
+import { SANDBOX_TIMEOUT } from "../../types";
 
-export async function getSandbox(network?: NetworkRun<any>) {
-  let sandbox = network?.state.kv.get("sandbox") as Sandbox;
-  if (!sandbox) {
-    sandbox = await Sandbox.create('vcka2m115xyxxgm57sx7');
-  }
-  await sandbox.setTimeout(5 * 60_000);
-  network?.state.kv.set("sandbox", sandbox);
+export async function getSandbox(sandboxId: string) {
+  const sandbox = await Sandbox.connect(sandboxId);
+  await sandbox.setTimeout(SANDBOX_TIMEOUT);
   return sandbox;
 }
+
+export function lastAssistantTextMessageContent(result: AgentResult) {
+  const lastAssistantTextMessageIndex = result.output.findLastIndex(
+    (message) => message.role === "assistant"
+  );
+  const message = result.output[lastAssistantTextMessageIndex] as
+    | TextMessage
+    | undefined;
+
+  return message?.content
+    ? typeof message.content === "string"
+      ? message.content
+      : message.content.map((c) => c.text).join("")
+    : undefined;
+}
+
+export const parseAgentOutput = (value: Message[]) => {
+  const output = value[0];
+
+  if (output.type !== "text") {
+    return "Fragment";
+  }
+
+  if (Array.isArray(output.content)) {
+    return output.content.map((txt) => txt).join("");
+  } else {
+    return output.content;
+  }
+};

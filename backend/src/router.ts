@@ -23,7 +23,7 @@ export const appRouter = router({
       });
 
       await inngest.send({
-        name: "agent/conversation.start",
+        name: "codeAgentFunction/run",
         data: {
           projectId: input.projectId,
           messageId: userMessage.id,

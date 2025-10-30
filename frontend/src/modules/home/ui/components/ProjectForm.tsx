@@ -11,14 +11,16 @@ import { toast } from "sonner";
 import { trpc } from "@/trpc";
 import { PROJECT_TEMPLATES } from "../../constants";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
 
 const formScema = z.object({
   value: z.string().min(1, { message: "Value is required" }),
 });
 
-
 const ProjectForm = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { user } = useUser();
+
   const form = useForm<z.infer<typeof formScema>>({
     resolver: zodResolver(formScema),
     defaultValues: {
@@ -28,21 +30,41 @@ const ProjectForm = () => {
 
   const sendMessageMutation = trpc.sendMessage.useMutation({
     onSuccess: (data) => {
-      toast.success("Message sent successfully");
-
+      console.log("✅ Send message success. Navigating with:", data);
       form.reset();
-
-      navigate(`/project/${data.projectId}`)
+      navigate(`/project/${data.projectId}`);
     },
     onError: () => {
       toast.error("Message sending unsuccessful");
     },
   });
 
+  const createProjectMutation = trpc.createProject.useMutation({
+    onSuccess: (newProject) => {
+      console.log("✅ Create project success:", newProject);
+      toast.success(`Project "${newProject.name}" created!`);
+      sendMessageMutation.mutate({
+        message: form.getValues("value"),
+        projectId: newProject.id,
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to create project. " + error.message);
+    },
+  });
+
   const onSubmit = async (values: z.infer<typeof formScema>) => {
-    sendMessageMutation.mutate({
-      message: values.value,
-      projectId: "927d386e-3e9d-46c4-aec7-ee944de56d2d",
+    console.log("Form submitted. User object is:", user);
+
+    if (!user) {
+      toast.error("You must be signed in to create a project.");
+      return;
+    }
+
+    console.log("User is present. Calling createProjectMutation...");
+    createProjectMutation.mutate({
+      name: values.value.substring(0, 40),
+      userId: user.id,
     });
   };
 
@@ -54,7 +76,8 @@ const ProjectForm = () => {
     });
   };
 
-  const isPending = sendMessageMutation.isPending;
+  const isPending =
+    createProjectMutation.isPending || sendMessageMutation.isPending;
   const isButtonDisbled = isPending || !form.formState.isValid;
   const [isFocuesd, setIsFocused] = useState(false);
 

@@ -1,6 +1,6 @@
 import { serve } from "inngest/express";
 import { inngest } from "./inngest/client";
-import {  simpleAgentRun } from "./inngest/functions";
+import { codeAgentFunction } from "./inngest/functions";
 import express from "express";
 import cors from "cors";
 import * as trpcExpress from "@trpc/server/adapters/express";
@@ -23,7 +23,7 @@ app.use(
 // Expose Inngest's API
 app.use(
   "/api/inngest",
-  serve({ client: inngest, functions: [ simpleAgentRun] })
+  serve({ client: inngest, functions: [codeAgentFunction] })
 );
 
 app.get("/test-trigger", async (req, res) => {
