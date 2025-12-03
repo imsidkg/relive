@@ -1,10 +1,5 @@
-# Use Node.js 18 Alpine with Bun for smaller image
-FROM node:18-alpine
-
-# Install Bun
-RUN apk add --no-cache curl && \
-    curl -fsSL https://bun.sh/install | bash && \
-    mv /root/.bun/bin/bun /usr/local/bin/bun
+# Use official Bun image
+FROM oven/bun:1-alpine
 
 # Set working directory
 WORKDIR /app
