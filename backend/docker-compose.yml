@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: loveable-postgres
+    environment:
+      POSTGRES_DB: loveable
+      POSTGRES_USER: relive
+      POSTGRES_PASSWORD: relive
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - loveable-network
+
+  backend:
+    build: .
+    container_name: loveable-backend
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql://relive:relive@postgres:5432/loveable
+      - E2B_TEMPLATE_NAME=${E2B_TEMPLATE_NAME}
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgres
+    networks:
+      - loveable-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
+
+networks:
+  loveable-network:
+    driver: bridge

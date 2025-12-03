@@ -1,10 +1,8 @@
-
 interface TreeViewProps {
   data: TreeItem[];
   value: string | null;
   onSelect: (value: string) => void;
 }
-
 
 import { ChevronsRightIcon, FileIcon, FolderIcon } from "lucide-react";
 import {
@@ -13,7 +11,18 @@ import {
   CollapsibleTrigger,
 } from "@radix-ui/react-collapsible";
 import type { TreeItem } from "@/types";
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarProvider, SidebarRail } from "@/components/ui/sidebar";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarProvider,
+  SidebarRail,
+} from "@/components/ui/sidebar";
 
 export const TreeView = ({ data, value, onSelect }: TreeViewProps) => {
   return (
@@ -50,7 +59,6 @@ interface TreeProps {
 }
 
 const Tree = ({ item, SelectedValue, onSelect, parentPath }: TreeProps) => {
-  // Handle TreeItem type: string | [string, ...TreeItem[]]
   const name = typeof item === "string" ? item : item[0];
   const items = typeof item === "string" ? [] : item.slice(1);
   const currenPath = parentPath
@@ -71,8 +79,6 @@ const Tree = ({ item, SelectedValue, onSelect, parentPath }: TreeProps) => {
       </SidebarMenuButton>
     );
   }
-
-  //its a folder
 
   return (
     <SidebarMenuItem>

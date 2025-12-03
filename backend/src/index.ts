@@ -6,8 +6,7 @@ import cors from "cors";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { appRouter } from "./router";
 import "zod-to-json-schema";
-import 'dotenv/config';
-
+import "dotenv/config";
 
 const app = express();
 app.use(express.json());
@@ -20,7 +19,6 @@ app.use(
   })
 );
 
-// Expose Inngest's API
 app.use(
   "/api/inngest",
   serve({ client: inngest, functions: [codeAgentFunction] })
@@ -34,7 +32,6 @@ app.get("/test-trigger", async (req, res) => {
   res.send("Event sent!");
 });
 
-// New endpoint to trigger the simple agent
 app.get("/test-agent", async (req, res) => {
   const prompt = req.query.prompt as string;
   if (!prompt) {
