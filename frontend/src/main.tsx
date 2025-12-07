@@ -21,7 +21,7 @@ const queryClient = new QueryClient();
 const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
-      url: "http://localhost:4000/trpc",
+      url: import.meta.env.VITE_BACKEND_URL || "http://localhost:4000/trpc",
     }),
   ],
 });
