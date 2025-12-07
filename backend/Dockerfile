@@ -20,5 +20,5 @@ RUN bunx prisma generate
 # Expose port
 EXPOSE 4000
 
-# Start the application
-CMD ["bun", "run", "start"]
+# Start the application with Bun (Bun can run TypeScript natively)
+CMD ["bun", "run", "src/index.ts"]
