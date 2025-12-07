@@ -1,7 +1,7 @@
 {
-  "buildCommand": "cd backend && bun install && cd ../frontend && bun run build",
-  "devCommand": "cd frontend && bun run dev",
-  "installCommand": "cd backend && bun install && cd ../frontend && bun install",
+  "buildCommand": "cd ../backend && bun add @trpc/server zod @prisma/client inngest && cd ../frontend && bun run build",
+  "devCommand": "bun run dev",
+  "installCommand": "bun install",
   "framework": "vite",
-  "outputDirectory": "frontend/dist"
+  "outputDirectory": "dist"
 }
