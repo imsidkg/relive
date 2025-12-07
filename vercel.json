@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd ../backend && bun add @trpc/server zod @prisma/client inngest && bunx prisma generate && cd ../frontend && bun run build",
+  "buildCommand": "cd ../backend && bun install && bunx prisma generate && cd ../frontend && bun run build",
   "devCommand": "bun run dev",
   "installCommand": "bun install",
   "framework": "vite",
