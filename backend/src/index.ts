@@ -24,7 +24,11 @@ app.use(
 
 app.use(
   "/api/inngest",
-  serve({ client: inngest, functions: [codeAgentFunction] })
+  serve({ 
+    client: inngest, 
+    functions: [codeAgentFunction],
+    signingKey: process.env.INNGEST_SIGNING_KEY,
+  })
 );
 
 app.get("/test-trigger", async (req, res) => {
