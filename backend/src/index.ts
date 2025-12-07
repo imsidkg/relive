@@ -10,7 +10,10 @@ import "dotenv/config";
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: ['https://relive.imsidkg.me'],
+  credentials: true
+}));
 
 app.use(
   "/trpc",
