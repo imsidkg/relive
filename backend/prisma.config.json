@@ -1,0 +1,6 @@
+{
+  "schema": "./prisma/schema.prisma",
+  "db": {
+    "url": "env(DATABASE_URL)"
+  }
+}
