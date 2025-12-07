@@ -1,0 +1,10 @@
+{
+  "name": "loveable-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build:frontend": "cd frontend && bun run build",
+    "dev:frontend": "cd frontend && bun run dev",
+    "dev:backend": "cd backend && bun run start"
+  }
+}
