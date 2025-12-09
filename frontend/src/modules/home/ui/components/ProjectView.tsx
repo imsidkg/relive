@@ -72,7 +72,7 @@ export const ProjectView = () => {
           >
             {/* Header section: triggers + buttons */}
             <div className="w-full flex items-center p-2 border-b gap-x-2">
-              <TabsList className="h-8 p-0 border rounded-md">
+              <TabsList className="h-8 p-1 border-1.5 border-gray-500 rounded-md gap-1">
                 <TabsTrigger value="preview" className="rounded-md">
                   <div className="flex gap-2 items-center">
                     <EyeIcon className="w-4 h-4" />
