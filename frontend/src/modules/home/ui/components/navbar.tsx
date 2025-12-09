@@ -6,15 +6,15 @@ type Props = {}
 
 const navbar = (props: Props) => {
   return (
-    <nav className="w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="w-full px-8 sm:px-12 lg:px-16">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <a href="/" className="flex items-center">
               <img 
                 src="/logo.svg" 
                 alt="Logo" 
-                className="h-10 w-auto"
+                className="h-7 w-auto"
               />
             </a>
           </div>
@@ -22,7 +22,7 @@ const navbar = (props: Props) => {
           <div className="flex items-center gap-4">
             <SignedOut>
               <SignInButton mode="modal">
-                <Button variant="default">
+                <Button variant="outline" className="bg-white text-black hover:bg-gray-100">
                   Sign In
                 </Button>
               </SignInButton>

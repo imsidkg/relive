@@ -1,12 +1,15 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { BackgroundLines } from "@/components/ui/background-lines";
 import Navbar from '@/modules/home/ui/components/navbar'
 
 export function RootLayout() {
+  const location = useLocation();
+  const isProjectPage = location.pathname.startsWith('/project/');
+
   return (
     <div>
       <main className='flex flex-col min-h-screen max-h-screen'>
-        <Navbar />
+        {!isProjectPage && <Navbar />}
         <div className="absolute inset-0 -z-10 h-full bg-background dark:bg-[radial-gradient(#393e4a_1px,transparent_1px)] bg-[radial-gradient(#daadd2,transparent_1px)] [background-size:16px_16px] bg-repeat-round">
           <BackgroundLines>{null}</BackgroundLines>
         </div>
