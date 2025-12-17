@@ -207,6 +207,7 @@ export const codeAgentFunction = inngest.createFunction(
       system: PROMPT3,
       model: gemini({
         model: "gemini-2.0-flash-exp", // Faster and higher free tier limits
+        apiKey: "AIzaSyCIzI_uhJbUJ5UY3lNNOyfVQF6pc_FmFGk",
       }),
 
       tools: [terminalTool, createOrUpdateFiles, readFiles],
@@ -279,6 +280,7 @@ export const codeAgentFunction = inngest.createFunction(
       system: FRAGMENT_TITLE_PROMPT,
       model: gemini({
         model: "gemini-2.0-flash",
+         apiKey: "AIzaSyCIzI_uhJbUJ5UY3lNNOyfVQF6pc_FmFGk",
       }),
     });
 
@@ -288,6 +290,7 @@ export const codeAgentFunction = inngest.createFunction(
       system: RESPONSE_PROMPT,
       model: gemini({
         model: "gemini-2.0-flash",
+         apiKey: "AIzaSyCIzI_uhJbUJ5UY3lNNOyfVQF6pc_FmFGk",
       }),
     });
 
