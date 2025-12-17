@@ -95,7 +95,7 @@ export const simpleAgent = createAgent({
   tools: [listFiles, writeFiles, readFiles, executeCommand, getPreviewURL],
   system: PROMPT,
   model: gemini({
-    model: "gemini-2.5-pro",
+    model: "gemini-2.5-flash",
     apiKey: "AIzaSyCIzI_uhJbUJ5UY3lNNOyfVQF6pc_FmFGk",
   }),
 });
