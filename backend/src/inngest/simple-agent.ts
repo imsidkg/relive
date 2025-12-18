@@ -96,6 +96,6 @@ export const simpleAgent = createAgent({
   system: PROMPT,
   model: gemini({
     model: "gemini-2.0-flash",
-    apiKey: "AIzaSyCIzI_uhJbUJ5UY3lNNOyfVQF6pc_FmFGk",
+    apiKey: process.env.GEMINI_API_KEY!,
   }),
 });
