@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormField } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "@/components/ui/button";
 import { ArrowUpIcon, Loader2Icon } from "lucide-react";
@@ -27,6 +27,16 @@ const ProjectForm = () => {
       value: "",
     },
   });
+
+  useEffect(() => {
+    if (user) {
+      const pendingPrompt = localStorage.getItem("pendingPrompt");
+      if (pendingPrompt) {
+        form.setValue("value", pendingPrompt);
+        localStorage.removeItem("pendingPrompt");
+      }
+    }
+  }, [user, form]);
 
   const sendMessageMutation = trpc.sendMessage.useMutation({
     onSuccess: (data) => {
@@ -57,7 +67,8 @@ const ProjectForm = () => {
     console.log("Form submitted. User object is:", user);
 
     if (!user) {
-      toast.error("You must be signed in to create a project.");
+      localStorage.setItem("pendingPrompt", values.value);
+      navigate("/sign-in");
       return;
     }
 

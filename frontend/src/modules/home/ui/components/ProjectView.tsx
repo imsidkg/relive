@@ -1,4 +1,3 @@
-
 import {
   ResizableHandle,
   ResizablePanelGroup,
@@ -8,7 +7,7 @@ import { Suspense, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { Code2Icon, CrownIcon, EyeIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { useAuth } from "@clerk/clerk-react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -24,7 +23,6 @@ import type { Fragment } from "@/types";
 import FileExplorer from "./FileExplorer";
 import { UserControl } from "./UserControl";
 import ErrorFallback from "./Error";
-
 
 export const ProjectView = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -72,7 +70,7 @@ export const ProjectView = () => {
           >
             {/* Header section: triggers + buttons */}
             <div className="w-full flex items-center p-2 border-b gap-x-2">
-              <TabsList className="h-8 p-1 border-2 border-gray-700 rounded-md gap-3">
+              <TabsList className="h-8 p-1 border-2 border-gray-700 rounded-md gap-6">
                 <TabsTrigger value="preview" className="rounded-md">
                   <div className="flex gap-2 items-center">
                     <EyeIcon className="w-4 h-4" />
