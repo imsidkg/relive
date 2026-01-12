@@ -32,7 +32,11 @@ const ProjectForm = () => {
     if (user) {
       const pendingPrompt = localStorage.getItem("pendingPrompt");
       if (pendingPrompt) {
-        form.setValue("value", pendingPrompt);
+        form.setValue("value", pendingPrompt, {
+          shouldValidate: true,
+          shouldDirty: true,
+          shouldTouch: true,
+        });
         localStorage.removeItem("pendingPrompt");
       }
     }
