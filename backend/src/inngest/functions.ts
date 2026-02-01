@@ -68,7 +68,7 @@ export const codeAgentFunction = inngest.createFunction(
         }
 
         return formattedMessages;
-      }
+      },
     );
 
     const state = createState<AgentState>(
@@ -78,7 +78,7 @@ export const codeAgentFunction = inngest.createFunction(
       },
       {
         messages: previousMessages,
-      }
+      },
     );
 
     const terminalTool = createTool({
@@ -104,7 +104,7 @@ export const codeAgentFunction = inngest.createFunction(
             return result.stdout;
           } catch (err) {
             console.error(
-              "command failed : ${err} \nstdout: ${buffers.stdout}\nstderr: ${buffers.stderr}"
+              "command failed : ${err} \nstdout: ${buffers.stdout}\nstderr: ${buffers.stderr}",
             );
             return "command failed : ${err} \nstdout: ${buffers.stdout}\nstderr: ${buffers.stderr}";
           }
@@ -120,12 +120,12 @@ export const codeAgentFunction = inngest.createFunction(
           z.object({
             path: z.string(),
             content: z.string(),
-          })
+          }),
         ),
       }),
       handler: async (
         { files },
-        { step, network }: Tool.Options<AgentState>
+        { step, network }: Tool.Options<AgentState>,
       ) => {
         const newFiles = await step?.run("createOrUpdateFiles", async () => {
           try {
@@ -206,7 +206,7 @@ export const codeAgentFunction = inngest.createFunction(
       description: "An expert Coding Agent",
       system: PROMPT3,
       model: gemini({
-        model: "gemini-2.0-flash-exp", // Faster and higher free tier limits
+        model: "gemini-2.0-flash", // Faster and higher free tier limits
         apiKey: process.env.GEMINI_API_KEY!,
       }),
 
@@ -280,7 +280,7 @@ export const codeAgentFunction = inngest.createFunction(
       system: FRAGMENT_TITLE_PROMPT,
       model: gemini({
         model: "gemini-2.0-flash",
-         apiKey: process.env.GEMINI_API_KEY!,
+        apiKey: process.env.GEMINI_API_KEY!,
       }),
     });
 
@@ -290,15 +290,15 @@ export const codeAgentFunction = inngest.createFunction(
       system: RESPONSE_PROMPT,
       model: gemini({
         model: "gemini-2.0-flash",
-         apiKey: process.env.GEMINI_API_KEY!,
+        apiKey: process.env.GEMINI_API_KEY!,
       }),
     });
 
     const { output: fragmentTitleOutput } = await fragmentTitleGenerator.run(
-      result.state.data.summary
+      result.state.data.summary,
     );
     const { output: responseOutput } = await responseGenerator.run(
-      result.state.data.summary
+      result.state.data.summary,
     );
 
     const generateFragmentTitle = () => {
@@ -359,5 +359,5 @@ export const codeAgentFunction = inngest.createFunction(
       title: "Fragment",
       files: result.state.data.summary,
     };
-  }
+  },
 );
