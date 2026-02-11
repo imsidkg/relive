@@ -19,22 +19,22 @@ const listFiles = createTool({
   },
 });
 
-const writeFiles = createTool({
-  name: "writeFiles",
+const create_or_update_files = createTool({
+  name: "create_or_update_files",
   description: "Create or update files in the sandbox",
   parameters: z.object({ path: z.string(), content: z.string() }),
   handler: async (parameters, { network }) => {
     const sandbox = await getSandbox(network);
     const files = await sandbox.files.write(
       parameters.path,
-      parameters.content
+      parameters.content,
     );
     return files;
   },
 });
 
-const readFiles = createTool({
-  name: "readFiles",
+const read_files = createTool({
+  name: "read_files",
   description: "Reads file's content according to the path provided",
   parameters: z.object({ path: z.string() }),
   handler: async (parameters, { network }) => {
@@ -49,8 +49,8 @@ const readFiles = createTool({
   },
 });
 
-const executeCommand = createTool({
-  name: "executeCommand",
+const terminal = createTool({
+  name: "terminal",
   description:
     "Executes a shell command in the sandbox terminal and returns its output.",
   parameters: z.object({
@@ -92,7 +92,13 @@ const getPreviewURL = createTool({
 
 export const simpleAgent = createAgent({
   name: "SImple tool agent",
-  tools: [listFiles, writeFiles, readFiles, executeCommand, getPreviewURL],
+  tools: [
+    listFiles,
+    create_or_update_files,
+    read_files,
+    terminal,
+    getPreviewURL,
+  ],
   system: PROMPT,
   model: gemini({
     model: "gemini-2.0-flash",
