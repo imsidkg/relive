@@ -10,25 +10,31 @@ import "dotenv/config";
 
 const app = express();
 app.use(express.json());
-app.use(cors({
-  origin: ['https://relive.imsidkg.me'],
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow any origin for now to debug connectivity issues
+      // TODO: Lock this down to specific domains in production
+      callback(null, true);
+    },
+    credentials: true,
+  }),
+);
 
 app.use(
   "/trpc",
   trpcExpress.createExpressMiddleware({
     router: appRouter,
-  })
+  }),
 );
 
 app.use(
   "/api/inngest",
-  serve({ 
-    client: inngest, 
+  serve({
+    client: inngest,
     functions: [codeAgentFunction],
     signingKey: process.env.INNGEST_SIGNING_KEY,
-  })
+  }),
 );
 
 app.get("/test-trigger", async (req, res) => {
@@ -52,6 +58,6 @@ app.get("/test-agent", async (req, res) => {
   res.send("Agent run event sent!");
 });
 
-app.listen(4000, () => {
-  console.log("Server started on http://localhost:4000");
+app.listen(4000, "0.0.0.0", () => {
+  console.log("Server started on http://0.0.0.0:4000");
 });
