@@ -9,7 +9,9 @@ const listFiles = createTool({
   parameters: z.object({}),
   handler: async (parameters, { network }) => {
     try {
-      const sandbox = await getSandbox(network);
+      const sandbox = await getSandbox(
+        (network?.state?.data as any)?.sandboxId || "",
+      );
       const files = await sandbox.files.list("/home/user");
       return files;
     } catch (error) {
@@ -22,9 +24,14 @@ const listFiles = createTool({
 const create_or_update_files = createTool({
   name: "create_or_update_files",
   description: "Create or update files in the sandbox",
-  parameters: z.object({ path: z.string(), content: z.string() }),
+  parameters: z.object({
+    path: z.string().describe("The path of the file"),
+    content: z.string().describe("The content of the file"),
+  }),
   handler: async (parameters, { network }) => {
-    const sandbox = await getSandbox(network);
+    const sandbox = await getSandbox(
+      (network?.state?.data as any)?.sandboxId || "",
+    );
     const files = await sandbox.files.write(
       parameters.path,
       parameters.content,
@@ -36,10 +43,14 @@ const create_or_update_files = createTool({
 const read_files = createTool({
   name: "read_files",
   description: "Reads file's content according to the path provided",
-  parameters: z.object({ path: z.string() }),
+  parameters: z.object({
+    path: z.string().describe("The path of the file to read"),
+  }),
   handler: async (parameters, { network }) => {
     try {
-      const sandbox = await getSandbox(network);
+      const sandbox = await getSandbox(
+        (network?.state?.data as any)?.sandboxId || "",
+      );
       const content = await sandbox.files.read(parameters.path);
       return content;
     } catch (error) {
@@ -58,7 +69,9 @@ const terminal = createTool({
   }),
   handler: async ({ command }, { network }) => {
     try {
-      const sandbox = await getSandbox(network);
+      const sandbox = await getSandbox(
+        (network?.state?.data as any)?.sandboxId || "",
+      );
 
       const process = await sandbox.commands.run(command);
 
@@ -84,7 +97,9 @@ const getPreviewURL = createTool({
     "Gets the public preview URL for the web application running in the sandbox on port 3000.",
   parameters: z.object({}),
   handler: async (parameters, { network }) => {
-    const sandbox = await getSandbox(network);
+    const sandbox = await getSandbox(
+      (network?.state?.data as any)?.sandboxId || "",
+    );
     const url = sandbox.getHost(3000);
     return url;
   },
