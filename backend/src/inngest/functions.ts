@@ -85,7 +85,7 @@ export const codeAgentFunction = inngest.createFunction(
       name: "terminal",
       description: "Use the terminal to run commands",
       parameters: z.object({
-        command: z.string(),
+        command: z.string().describe("The shell command to execute"),
       }),
       handler: async ({ command }, { step }) => {
         return await step?.run("terminal", async () => {
@@ -116,12 +116,16 @@ export const codeAgentFunction = inngest.createFunction(
       name: "create_or_update_files",
       description: "create or Update files in the sandbox",
       parameters: z.object({
-        files: z.array(
-          z.object({
-            path: z.string(),
-            content: z.string(),
-          }),
-        ),
+        files: z
+          .array(
+            z.object({
+              path: z
+                .string()
+                .describe("The absolute or relative path to the file"),
+              content: z.string().describe("The content to write to the file"),
+            }),
+          )
+          .describe("A list of files to create or update"),
       }),
       handler: async (
         { files },
@@ -155,7 +159,9 @@ export const codeAgentFunction = inngest.createFunction(
       name: "read_files",
       description: "read_files from sandbox",
       parameters: z.object({
-        files: z.array(z.string()),
+        files: z
+          .array(z.string().describe("The path of the file to read"))
+          .describe("A list of file paths to read"),
       }),
 
       handler: async ({ files }, { step }) => {
@@ -179,7 +185,7 @@ export const codeAgentFunction = inngest.createFunction(
     });
 
     const openAiCodeAgent = createAgent<AgentState>({
-      name: "openAiCodeAgent ",
+      name: "openAiCodeAgent",
       description: "An expert Coding Agent",
       system: PROMPT,
       model: openai({
@@ -202,7 +208,7 @@ export const codeAgentFunction = inngest.createFunction(
     });
 
     const codeAgent = createAgent<AgentState>({
-      name: "codeAgent ",
+      name: "codeAgent",
       description: "An expert Coding Agent",
       system: PROMPT3,
       model: gemini({
@@ -227,7 +233,7 @@ export const codeAgentFunction = inngest.createFunction(
     });
 
     const anthropicCodeAgent = createAgent<AgentState>({
-      name: "anthropicCodeAgent ",
+      name: "anthropicCodeAgent",
       description: "An expert Coding Agent",
       system: PROMPT2,
       model: anthropic({

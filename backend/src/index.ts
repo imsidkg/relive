@@ -60,4 +60,12 @@ app.get("/test-agent", async (req, res) => {
 
 app.listen(4000, "0.0.0.0", () => {
   console.log("Server started on http://0.0.0.0:4000");
+  const geminiKey = process.env.GEMINI_API_KEY;
+  if (geminiKey) {
+    const start = geminiKey.substring(0, 10);
+    const end = geminiKey.substring(geminiKey.length - 4);
+    console.log(`Loaded GEMINI_API_KEY: ${start}...${end}`);
+  } else {
+    console.log("GEMINI_API_KEY is not set.");
+  }
 });
