@@ -20,50 +20,53 @@ The high-level architecture of Relive is intentionally modular and slightly over
 
 ```mermaid
 flowchart TD
-  subgraph FE[Frontend - Vite React]
-    FE_UI[UI: Home and Project Views]
-    FE_TRPC[TRPC Client]
-    FE_AUTH[Clerk SDK]
-    FE_ROUTER[React Router]
+
+  subgraph FE["Frontend - Vite React"]
+    FE_UI["UI: Home + Project Views"]
+    FE_TRPC["tRPC Client"]
+    FE_AUTH["Clerk SDK"]
+    FE_ROUTER["React Router"]
   end
 
-  subgraph BE[Backend - Express]
-    BE_APP[Express App]
-    BE_TRPC[TRPC Router (/trpc)]
-    BE_INNGEST_EP[Inngest HTTP Endpoint (/api/inngest)]
+  subgraph BE["Backend - Express"]
+    BE_APP["Express App"]
+    BE_TRPC["tRPC Router"]
+    BE_INNGEST_EP["Inngest Endpoint"]
   end
 
-  subgraph AG[Async Orchestration - Inngest]
-    AG_FN[codeAgentFunction]
-    subgraph AG_NET[Agent Network]
-      AG_NET_STATE[Shared Agent State]
-      AG_NET_CODE[codeAgent (Gemini)]
-      AG_NET_ANTH[anthropicCodeAgent]
-      AG_NET_OPENAI[openAiCodeAgent]
-      AG_TERMINAL[Tool: terminal]
-      AG_FILES[Tool: create_or_update_files]
-      AG_READ[Tool: read_files]
+  subgraph AG["Async Orchestration - Inngest"]
+    AG_FN["codeAgentFunction"]
+
+    subgraph AG_NET["Agent Network"]
+      AG_NET_STATE["Shared Agent State"]
+      AG_NET_CODE["codeAgent Gemini"]
+      AG_NET_ANTH["Anthropic Code Agent"]
+      AG_NET_OPENAI["OpenAI Code Agent"]
+
+      AG_TERMINAL["Tool terminal"]
+      AG_FILES["Tool create update files"]
+      AG_READ["Tool read files"]
     end
   end
 
-  subgraph SB[E2B Sandbox - Next.js Runtime]
-    SB_CTL[Sandbox Controller - e2b code interpreter]
-    SB_FS[Ephemeral File System]
-    SB_DEV[Running Next.js Dev Server]
+  subgraph SB["E2B Sandbox - Next Runtime"]
+    SB_CTL["Sandbox Controller"]
+    SB_FS["Ephemeral File System"]
+    SB_DEV["Next Dev Server"]
   end
 
-  subgraph DB[Database Layer - Prisma]
-    DB_PRISMA[Prisma Client]
-    DB_MSG[Messages - history]
-    DB_FRAG[Fragments - files and sandboxUrl and title]
-    DB_PROJ[Projects]
+  subgraph DB["Database - Prisma"]
+    DB_PRISMA["Prisma Client"]
+    DB_MSG["Messages"]
+    DB_FRAG["Fragments"]
+    DB_PROJ["Projects"]
   end
 
-  subgraph EXT[AI and Infra Providers]
-    EXT_GEMINI[Gemini API]
-    EXT_ANTH[Anthropic API]
-    EXT_OPENAI[OpenAI API]
-    EXT_CLERK[Clerk Auth]
+  subgraph EXT["External Providers"]
+    EXT_GEMINI["Gemini API"]
+    EXT_ANTH["Anthropic API"]
+    EXT_OPENAI["OpenAI API"]
+    EXT_CLERK["Clerk Auth"]
   end
 
   FE_UI --> FE_ROUTER
