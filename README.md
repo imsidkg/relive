@@ -20,105 +20,91 @@ The high-level architecture of Relive is intentionally modular and slightly over
 
 ```mermaid
 flowchart TD
-  %% Frontend
-  subgraph FE[Frontend (Vite/React)]
-    FE_UI[Home & Project Views<br/>React + Tailwind + Shadcn]
+  subgraph FE[Frontend - Vite React]
+    FE_UI[UI: Home and Project Views]
     FE_TRPC[TRPC Client]
     FE_AUTH[Clerk SDK]
     FE_ROUTER[React Router]
   end
 
-  %% Backend HTTP surface
-  subgraph BE[Backend (Express)]
+  subgraph BE[Backend - Express]
     BE_APP[Express App]
-    BE_TRPC[TRPC Router<br/>/trpc]
-    BE_INNGEST_EP[Inngest HTTP Endpoint<br/>/api/inngest]
+    BE_TRPC[TRPC Router (/trpc)]
+    BE_INNGEST_EP[Inngest HTTP Endpoint (/api/inngest)]
   end
 
-  %% Inngest + Agent Network
-  subgraph AG[Async Orchestration (Inngest)]
-    AG_FN[codeAgentFunction<br/>Inngest Function]
-
+  subgraph AG[Async Orchestration - Inngest]
+    AG_FN[codeAgentFunction]
     subgraph AG_NET[Agent Network]
       AG_NET_STATE[Shared Agent State]
       AG_NET_CODE[codeAgent (Gemini)]
       AG_NET_ANTH[anthropicCodeAgent]
       AG_NET_OPENAI[openAiCodeAgent]
-      AG_TERMINAL[terminal Tool]
-      AG_FILES[create_or_update_files Tool]
-      AG_READ[read_files Tool]
+      AG_TERMINAL[Tool: terminal]
+      AG_FILES[Tool: create_or_update_files]
+      AG_READ[Tool: read_files]
     end
   end
 
-  %% Sandbox & Runtime
-  subgraph SB[E2B Sandbox (Next.js Runtime)]
-    SB_CTL[Sandbox Controller<br/>@e2b/code-interpreter]
-    SB_FS[Ephemeral FS<br/>/app, /lib, etc.]
+  subgraph SB[E2B Sandbox - Next.js Runtime]
+    SB_CTL[Sandbox Controller - e2b code interpreter]
+    SB_FS[Ephemeral File System]
     SB_DEV[Running Next.js Dev Server]
   end
 
-  %% Persistence
-  subgraph DB[Database Layer (Prisma)]
+  subgraph DB[Database Layer - Prisma]
     DB_PRISMA[Prisma Client]
-    DB_MSG[Messages<br/>conversation history]
-    DB_FRAG[Fragments<br/>{ files, sandboxUrl, title }]
+    DB_MSG[Messages - history]
+    DB_FRAG[Fragments - files and sandboxUrl and title]
     DB_PROJ[Projects]
   end
 
-  %% External providers
-  subgraph EXT[AI & Infra Providers]
+  subgraph EXT[AI and Infra Providers]
     EXT_GEMINI[Gemini API]
     EXT_ANTH[Anthropic API]
     EXT_OPENAI[OpenAI API]
     EXT_CLERK[Clerk Auth]
   end
 
-  %% Frontend wiring
   FE_UI --> FE_ROUTER
   FE_UI --> FE_TRPC
   FE_UI --> FE_AUTH
 
-  FE_TRPC -->|HTTP batch link| BE_TRPC
+  FE_TRPC --> BE_TRPC
   FE_AUTH --> EXT_CLERK
 
-  %% Backend routing
   BE_APP --> BE_TRPC
   BE_APP --> BE_INNGEST_EP
 
-  %% TRPC to DB
   BE_TRPC --> DB_PRISMA
   DB_PRISMA --> DB_MSG
   DB_PRISMA --> DB_FRAG
   DB_PRISMA --> DB_PROJ
 
-  %% Inngest orchestration
-  BE_TRPC -->|enqueue events| AG_FN
+  BE_TRPC --> AG_FN
   BE_INNGEST_EP --> AG_FN
 
   AG_FN --> AG_NET
-  AG_NET_STATE <-->|read/write| AG_NET_CODE
-  AG_NET_STATE <-->|optional| AG_NET_ANTH
-  AG_NET_STATE <-->|optional| AG_NET_OPENAI
+  AG_NET_STATE --> AG_NET_CODE
+  AG_NET_STATE --> AG_NET_ANTH
+  AG_NET_STATE --> AG_NET_OPENAI
 
-  %% Tools inside agents
   AG_NET_CODE --> AG_TERMINAL
   AG_NET_CODE --> AG_FILES
   AG_NET_CODE --> AG_READ
 
-  %% Sandbox interactions
   AG_TERMINAL --> SB_CTL
   AG_FILES --> SB_FS
   AG_READ --> SB_FS
   SB_CTL --> SB_DEV
 
-  %% AI model calls
   AG_NET_CODE --> EXT_GEMINI
   AG_NET_ANTH --> EXT_ANTH
   AG_NET_OPENAI --> EXT_OPENAI
 
-  %% Persisting fragment outputs
-  AG_FN -->|summary + files| DB_FRAG
-  DB_FRAG --> BE_TRPC --> FE_UI
+  AG_FN --> DB_FRAG
+  DB_FRAG --> BE_TRPC
+  BE_TRPC --> FE_UI
 ```
 
 ### Request Flow (Simplified)
