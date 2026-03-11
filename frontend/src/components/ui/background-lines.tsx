@@ -17,7 +17,7 @@ export const BackgroundLines = ({
     <div
       className={cn(
         "h-[20rem] md:h-screen w-full bg-white dark:bg-black",
-        className
+        className,
       )}
     >
       <SVG svgOptions={svgOptions} />
@@ -128,8 +128,6 @@ const SVG = ({
           key={`path-first-${idx}`}
         />
       ))}
-
-      {/* duplicate for more paths */}
       {paths.map((path, idx) => (
         <motion.path
           d={path}

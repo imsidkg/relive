@@ -10,7 +10,7 @@ export const appRouter = router({
       z.object({
         message: z.string(),
         projectId: z.string(),
-      })
+      }),
     )
     .mutation(async ({ input }) => {
       const userMessage = await prisma.message.create({
@@ -41,7 +41,7 @@ export const appRouter = router({
       z.object({
         name: z.string(),
         userId: z.string(),
-      })
+      }),
     )
     .mutation(async ({ input }) => {
       const project = await prisma.project.create({

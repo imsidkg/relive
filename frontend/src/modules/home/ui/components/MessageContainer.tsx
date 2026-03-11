@@ -27,13 +27,13 @@ const MessagesContainer = ({
     },
     {
       refetchInterval: 2000,
-    }
+    },
   );
 
   useEffect(() => {
     const allMessages: Message[] = messages || [];
     const lastAssistantMessage = allMessages.findLast(
-      (message) => message.role === "ASSISTANCE"
+      (message) => message.role === "ASSISTANCE",
     );
 
     if (

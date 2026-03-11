@@ -1,7 +1,7 @@
 import { Inngest } from "inngest";
 
-export const inngest = new Inngest({ 
+export const inngest = new Inngest({
   id: "my-lovable-app",
   eventKey: process.env.INNGEST_EVENT_KEY,
-  isDev: false, 
+  isDev: false,
 });

@@ -55,7 +55,7 @@ const FragmentCard = ({
       className={cn(
         "flex items-start text-start gap-2 border rounded-lg bg-muted w-fit p-3 hover:bg-secondar transition-colors",
         isActiveFragment &&
-          "bg-primary text-primary-foreground border-primary hover:bg-primary"
+          "bg-primary text-primary-foreground border-primary hover:bg-primary",
       )}
       onClick={() => onFragmentClick(fragment)}
     >
@@ -85,17 +85,10 @@ const AssistanceMessage = ({
     <div
       className={cn(
         "flex flex-col group px-2 pb-4",
-        type === "ERROR" && "text-red-700 dark:text-red-500"
+        type === "ERROR" && "text-red-700 dark:text-red-500",
       )}
     >
       <div className="flex items-center gap-2 pl-2 mb-2">
-        {/* <Image
-       src ="/logo.svg"
-       alt ="Codey"
-       width={18}
-       height={18}
-      className="shrink-0"
-      /> */}
         <Bot
           size={50}
           width={18}

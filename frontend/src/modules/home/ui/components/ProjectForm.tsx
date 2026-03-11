@@ -102,7 +102,7 @@ const ProjectForm = () => {
         onSubmit={form.handleSubmit(onSubmit)}
         className={cn(
           "relative border p-4 pt-1 rounded-xl bg-sidebar transition-all",
-          isFocuesd && "shadow-xs"
+          isFocuesd && "shadow-xs",
         )}
       >
         <FormField
@@ -143,7 +143,7 @@ const ProjectForm = () => {
             disabled={isButtonDisbled}
             className={cn(
               "size-8 rounded-full",
-              isButtonDisbled && "bg-muted-foreground border"
+              isButtonDisbled && "bg-muted-foreground border",
             )}
           >
             {isPending ? (

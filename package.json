@@ -5,6 +5,10 @@
   "scripts": {
     "build:frontend": "cd frontend && bun run build",
     "dev:frontend": "cd frontend && bun run dev",
-    "dev:backend": "cd backend && bun run start"
+    "dev:backend": "cd backend && bun run start",
+    "format": "prettier \"**/*.{ts,tsx,js,jsx,json,md,css}\" --write"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.1"
   }
 }

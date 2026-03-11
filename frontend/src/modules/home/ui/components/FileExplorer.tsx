@@ -109,7 +109,7 @@ const FileExplorer = ({ files }: FileExplorerProps) => {
         setSelectedFile(filepath);
       }
     },
-    [files]
+    [files],
   );
 
   const handleCopy = () => {

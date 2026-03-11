@@ -1,11 +1,11 @@
 # Deployment Guide
 
-This guide will help you deploy the Loveab   Add:
+This guide will help you deploy the Loveab Add:
 
-   ```
-   INNGEST_SIGNING_KEY="your_inngest_signing_key_here"
-   E2B_TEMPLATE_NAME="nextjs-imsidkg"
-   ```plication:
+````
+INNGEST_SIGNING_KEY="your_inngest_signing_key_here"
+E2B_TEMPLATE_NAME="nextjs-imsidkg"
+```plication:
 - Backend on Digital Ocean Droplet
 - Frontend on Vercel
 
@@ -32,23 +32,23 @@ This option uses Docker Compose to containerize the backend and PostgreSQL datab
 
 1. **Install Docker on Droplet**
 
-   ```bash
-   # Update system
-   sudo apt update
+```bash
+# Update system
+sudo apt update
 
-   # Install Docker
-   curl -fsSL https://get.docker.com -o get-docker.sh
-   sudo sh get-docker.sh
+# Install Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
 
-   # Add user to docker group
-   sudo usermod -aG docker $USER
+# Add user to docker group
+sudo usermod -aG docker $USER
 
-   # Install Docker Compose
-   sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-   sudo chmod +x /usr/local/bin/docker-compose
+# Install Docker Compose
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 
-   # Logout and login again for group changes to take effect
-   ```
+# Logout and login again for group changes to take effect
+````
 
 2. **Clone Repository and Navigate to Backend**
 
@@ -119,6 +119,7 @@ ssh root@YOUR_DROPLET_IP
 ```
 
 Update the system:
+
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
@@ -136,6 +137,7 @@ source ~/.bashrc
 ```
 
 Verify installations:
+
 ```bash
 node --version
 bun --version

@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function convertFilesToTreeItems(
-  files: Record<string, string>
+  files: Record<string, string>,
 ): TreeItem[] {
   interface TreeNode {
     [key: string]: TreeNode | null;

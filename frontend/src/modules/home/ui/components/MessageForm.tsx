@@ -61,7 +61,7 @@ export const MessageForm = ({ projectId }: props) => {
         onSubmit={form.handleSubmit(onSubmit)}
         className={cn(
           "relative border p-4 pt-1 rounded-xl bg-sidebar transition-all",
-          isFocused && "shadow-xs"
+          isFocused && "shadow-xs",
         )}
       >
         <FormField
@@ -99,7 +99,7 @@ export const MessageForm = ({ projectId }: props) => {
             disabled={isButtonDisabled}
             className={cn(
               "size-8 rounded-full",
-              isButtonDisabled && "bg-muted-foreground border"
+              isButtonDisabled && "bg-muted-foreground border",
             )}
           >
             {isPending ? (

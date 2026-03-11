@@ -39,14 +39,6 @@ export const MessageLoading = () => {
   return (
     <div className=" flex flex-col group px-2 pb-4">
       <div className="flex items-center gap-2 pt-2 mb-2">
-        {/* <Image 
-               
-               src={"/logo.svg"}
-               alt ="codey"
-               width={18}
-               height={18}
-               className='shrink-0S'
-               /> */}
         <Bot
           size={18}
           width={18}

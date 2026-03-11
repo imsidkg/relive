@@ -1,8 +1,13 @@
-import React from 'react'
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react'
-import { Button } from '@/components/ui/button'
+import React from "react";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/clerk-react";
+import { Button } from "@/components/ui/button";
 
-type Props = {}
+type Props = {};
 
 const navbar = (props: Props) => {
   return (
@@ -11,18 +16,17 @@ const navbar = (props: Props) => {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <a href="/" className="flex items-center">
-              <img 
-                src="/logo.svg" 
-                alt="Logo" 
-                className="h-7 w-auto"
-              />
+              <img src="/logo.svg" alt="Logo" className="h-7 w-auto" />
             </a>
           </div>
 
           <div className="flex items-center gap-4">
             <SignedOut>
               <SignInButton mode="modal">
-                <Button variant="outline" className="bg-white text-black hover:bg-gray-100">
+                <Button
+                  variant="outline"
+                  className="bg-white text-black hover:bg-gray-100"
+                >
                   Sign In
                 </Button>
               </SignInButton>
@@ -34,7 +38,7 @@ const navbar = (props: Props) => {
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default navbar
+export default navbar;

@@ -1,4 +1,3 @@
-
 import { Bot, HeartIcon } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
@@ -26,7 +25,6 @@ const Page = () => {
 
   return (
     <>
-      {/* {mounted && <PageLoading />} */}
       <AnimatePresence>
         <div className="flex flex-col max-w-5xl mx-auto w-full">
           <section className="space-y-6 py-[16vh] 2xl:py-48">
@@ -43,25 +41,6 @@ const Page = () => {
                 className="md:size-[80px] text-primary animate-bounce "
               />
             </motion.div>
-
-            {/* <Image
-            src="/logo.svg"
-            alt="Vibe"
-            width={50}
-            height={50}
-            className="hidden md:block"
-          /> */}
-
-            {/*           
-          <TextRevealCard 
-        text="Hi there I am Codey"
-        revealText="Let's Make Some Magic"
-        className="font-Aladin  bg-transparent text-center  text-3xl   ml-50"  
-        
-        >   </TextRevealCard>
-       
-
- */}
 
             <TypingAnimatedText />
 
@@ -83,23 +62,6 @@ const Page = () => {
               <ProjectForm />
             </motion.div>
           </section>
-          {/* <ProjectsList /> */}
-
-          {/* <div className="  max-w-2xl gap-2 w-full "> */}
-
-          {/* <div className=" flex justify-center mt-10 ml-0 mr-0  ">
-            <b className="m-0 ">Built with</b> */}
-          {/* <DotLottieReact
-          src="/animations/heart.lottie "
-          loop
-          autoplay
-       
-          className='w-30  m-0  animate-bounce'
-        /> */}
-          {/* <span className=" m-0  animate-bounce "> ❤️</span>
-            <b className="m-0 "> By Siddharth </b>{" "}
-          </div> */}
-          {/* </div> */}
         </div>
       </AnimatePresence>
     </>

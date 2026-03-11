@@ -13,8 +13,6 @@ app.use(express.json());
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow any origin for now to debug connectivity issues
-      // TODO: Lock this down to specific domains in production
       callback(null, true);
     },
     credentials: true,

@@ -68,7 +68,6 @@ export const ProjectView = () => {
             value={tabState}
             onValueChange={(value) => setTabState(value as "preview" | "code")}
           >
-            {/* Header section: triggers + buttons */}
             <div className="w-full flex items-center p-2 border-b gap-x-2">
               <TabsList className="h-8 p-1 rounded-md gap-4">
                 <TabsTrigger

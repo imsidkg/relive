@@ -212,7 +212,7 @@ export const codeAgentFunction = inngest.createFunction(
       description: "An expert Coding Agent",
       system: PROMPT3,
       model: gemini({
-        model: "gemini-2.0-flash", // Faster and higher free tier limits
+        model: "gemini-2.0-flash",
         apiKey: process.env.GEMINI_API_KEY!,
       }),
 
