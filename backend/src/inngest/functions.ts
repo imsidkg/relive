@@ -105,15 +105,29 @@ export const codeAgentFunction = inngest.createFunction(
           // - Do NOT run `bun add ...` (bun is unreliable/missing in the sandbox)
           // - Block animation deps explicitly to avoid repeated install failures
           let commandToRun = command;
+          const blockedPackages = ["tailwindcss-animate"];
+          const isBlockedInstall = (pkgListRaw: string) => {
+            const tokens = pkgListRaw
+              .split(/\s+/)
+              .map((t) => t.trim())
+              .filter(Boolean)
+              .filter((t) => !t.startsWith("-"));
+            return tokens.some((t) => blockedPackages.includes(t));
+          };
           const bunAddMatch = trimmedCommand.match(/^bun\s+add\s+(.+)$/);
           if (bunAddMatch) {
             const pkgs = bunAddMatch[1].trim();
-            if (
-              /^(motion|framer-motion|tailwindcss-animate)(\s|$)/.test(pkgs)
-            ) {
+            if (isBlockedInstall(pkgs)) {
               return `Blocked dependency install in sandbox: ${trimmedCommand}`;
             }
             commandToRun = `npm install ${pkgs}`;
+          }
+          const npmInstallMatch = trimmedCommand.match(/^npm\s+install\s+(.+)$/);
+          if (npmInstallMatch) {
+            const pkgs = npmInstallMatch[1].trim();
+            if (isBlockedInstall(pkgs)) {
+              return `Blocked dependency install in sandbox: ${trimmedCommand}`;
+            }
           }
           try {
             const sandbox = await getSandbox(sandboxId);
