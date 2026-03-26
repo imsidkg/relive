@@ -251,9 +251,7 @@ export const codeAgentFunction = inngest.createFunction(
       description: "An expert Coding Agent",
       system: PROMPT3,
       model: gemini({
-        // NOTE: `gemini-2.0-flash` has been observed producing malformed tool calls
-        // with this agent-kit version. Use a stable tool-calling model instead.
-        model: "gemini-1.5-pro",
+        model: "gemini-2.0-flash",
         apiKey: process.env.GEMINI_API_KEY!,
       }),
 
