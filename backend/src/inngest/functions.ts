@@ -90,9 +90,28 @@ export const codeAgentFunction = inngest.createFunction(
       handler: async ({ command }, { step }) => {
         return await step?.run("terminal", async () => {
           const buffers = { stdout: "", stderr: "" };
+          const trimmedCommand = command.trim();
+          // Rewrite common animation installs to avoid sandbox failures.
+          // User request: do not run `bun add motion` in the sandbox.
+          let commandToRun = command;
+          if (/^bun\s+add\s+motion(\s|$)/.test(trimmedCommand)) {
+            commandToRun = "npm install motion";
+          } else if (
+            /^bun\s+add\s+framer-motion(\s|$)/.test(trimmedCommand)
+          ) {
+            commandToRun = "npm install framer-motion";
+          } else if (
+            /^bun\s+add\s+tailwindcss-animate(\s|$)/.test(trimmedCommand)
+          ) {
+            commandToRun = "npm install tailwindcss-animate";
+          }
+          const fallbackCommand =
+            /^bun\s+add\s+/.test(trimmedCommand)
+              ? `npm install ${trimmedCommand.replace(/^bun\s+add\s+/, "")}`
+              : null;
           try {
             const sandbox = await getSandbox(sandboxId);
-            const result = await sandbox.commands.run(command, {
+            const result = await sandbox.commands.run(commandToRun, {
               onStdout: (data: string) => {
                 buffers.stdout += data;
               },
@@ -103,10 +122,30 @@ export const codeAgentFunction = inngest.createFunction(
 
             return result.stdout;
           } catch (err) {
+            // If the sandbox doesn't have `bun`, retry common dependency installs via npm.
+            if (fallbackCommand) {
+              try {
+                const sandbox = await getSandbox(sandboxId);
+                const result = await sandbox.commands.run(fallbackCommand, {
+                  onStdout: (data: string) => {
+                    buffers.stdout += data;
+                  },
+                  onStderr: (data: string) => {
+                    buffers.stderr += data;
+                  },
+                });
+                return result.stdout;
+              } catch (err2) {
+                console.error(
+                  `terminal fallback failed: ${String(err2)}\nstdout: ${buffers.stdout}\nstderr: ${buffers.stderr}`,
+                );
+              }
+            }
+
             console.error(
-              "command failed : ${err} \nstdout: ${buffers.stdout}\nstderr: ${buffers.stderr}",
+              `terminal command failed: ${String(err)}\nstdout: ${buffers.stdout}\nstderr: ${buffers.stderr}`,
             );
-            return "command failed : ${err} \nstdout: ${buffers.stdout}\nstderr: ${buffers.stderr}";
+            return `command failed : ${String(err)} \nstdout: ${buffers.stdout}\nstderr: ${buffers.stderr}`;
           }
         });
       },

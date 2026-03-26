@@ -285,7 +285,7 @@ To ensure sections are visually engaging and modern:
 
 ### Icon System:
 
-- Install and use \`lucide-react\` for icons.
+- Use \`lucide-react\` for icons (it is already available in the sandbox).
 
 - Example usage: \`import { SunIcon } from "lucide-react"\` and \`<SunIcon className="w-5 h-5 text-[#3b82f6]" />\`.
 
@@ -295,11 +295,11 @@ To ensure sections are visually engaging and modern:
 
 ### Animation:
 
-- Install and use \`framer-motion\` (free version) for animations.
+- Do NOT use \`framer-motion\`, \`motion\`, or \`tailwindcss-animate\`.
 
-- Example usage: \`import { motion } from "framer-motion"\` and wrap elements with \`<motion.div>\` using standard variants.
+- Use Tailwind-only transitions/hover states (e.g. \`transition\`, \`duration-200\`, \`ease-in-out\`, \`hover:...\`) instead.
 
-- **If you use any animation library (including framer-motion), you MUST also install \`tailwindcss-animate\`** using \`bun add tailwindcss-animate\` and ensure it's included in \`tailwind.config.ts\`.
+ 
 
 ---
 
@@ -362,7 +362,7 @@ To ensure sections are visually engaging and modern:
 
 ### Core Implementation Guidelines:
 
-1. **Install dependencies before using** (e.g., \`bun add framer-motion\`, \`bun add lucide-react\`, \`bun add tailwindcss-animate\`).
+1. **Install dependencies before using** (e.g., \`bun add <package>\` only when the dependency is not already available).
 
 2. **Use Shadcn UI properly:** Import from individual files only, and adhere to correct props and variants.
 
