@@ -91,24 +91,20 @@ export const codeAgentFunction = inngest.createFunction(
         return await step?.run("terminal", async () => {
           const buffers = { stdout: "", stderr: "" };
           const trimmedCommand = command.trim();
-          // Rewrite common animation installs to avoid sandbox failures.
-          // User request: do not run `bun add motion` in the sandbox.
+          // Sandbox hardening:
+          // - Do NOT run `bun add ...` (bun is unreliable/missing in the sandbox)
+          // - Block animation deps explicitly to avoid repeated install failures
           let commandToRun = command;
-          if (/^bun\s+add\s+motion(\s|$)/.test(trimmedCommand)) {
-            commandToRun = "npm install motion";
-          } else if (
-            /^bun\s+add\s+framer-motion(\s|$)/.test(trimmedCommand)
-          ) {
-            commandToRun = "npm install framer-motion";
-          } else if (
-            /^bun\s+add\s+tailwindcss-animate(\s|$)/.test(trimmedCommand)
-          ) {
-            commandToRun = "npm install tailwindcss-animate";
+          const bunAddMatch = trimmedCommand.match(/^bun\s+add\s+(.+)$/);
+          if (bunAddMatch) {
+            const pkgs = bunAddMatch[1].trim();
+            if (
+              /^(motion|framer-motion|tailwindcss-animate)(\s|$)/.test(pkgs)
+            ) {
+              return `Blocked dependency install in sandbox: ${trimmedCommand}`;
+            }
+            commandToRun = `npm install ${pkgs}`;
           }
-          const fallbackCommand =
-            /^bun\s+add\s+/.test(trimmedCommand)
-              ? `npm install ${trimmedCommand.replace(/^bun\s+add\s+/, "")}`
-              : null;
           try {
             const sandbox = await getSandbox(sandboxId);
             const result = await sandbox.commands.run(commandToRun, {
@@ -122,26 +118,6 @@ export const codeAgentFunction = inngest.createFunction(
 
             return result.stdout;
           } catch (err) {
-            // If the sandbox doesn't have `bun`, retry common dependency installs via npm.
-            if (fallbackCommand) {
-              try {
-                const sandbox = await getSandbox(sandboxId);
-                const result = await sandbox.commands.run(fallbackCommand, {
-                  onStdout: (data: string) => {
-                    buffers.stdout += data;
-                  },
-                  onStderr: (data: string) => {
-                    buffers.stderr += data;
-                  },
-                });
-                return result.stdout;
-              } catch (err2) {
-                console.error(
-                  `terminal fallback failed: ${String(err2)}\nstdout: ${buffers.stdout}\nstderr: ${buffers.stderr}`,
-                );
-              }
-            }
-
             console.error(
               `terminal command failed: ${String(err)}\nstdout: ${buffers.stdout}\nstderr: ${buffers.stderr}`,
             );
@@ -226,7 +202,7 @@ export const codeAgentFunction = inngest.createFunction(
     const openAiCodeAgent = createAgent<AgentState>({
       name: "openAiCodeAgent",
       description: "An expert Coding Agent",
-      system: PROMPT,
+      system: PROMPT3,
       model: openai({
         model: "gpt-4o",
       }),
@@ -299,7 +275,7 @@ export const codeAgentFunction = inngest.createFunction(
 
     const network = createNetwork<AgentState>({
       name: "coding-agent-network",
-      agents: [codeAgent, openAiCodeAgent],
+      agents: [openAiCodeAgent],
       maxIter: 15,
       defaultState: state,
       router: async ({ network }) => {
@@ -308,7 +284,7 @@ export const codeAgentFunction = inngest.createFunction(
         if (summary) {
           return;
         }
-        return codeAgent;
+        return openAiCodeAgent;
       },
     });
 
