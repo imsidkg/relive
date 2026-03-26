@@ -116,7 +116,8 @@ export const simpleAgent = createAgent({
   ],
   system: PROMPT,
   model: gemini({
-    model: "gemini-2.0-flash",
+    // `gemini-2.0-flash` has been observed producing malformed tool calls here.
+    model: "gemini-1.5-flash",
     apiKey: process.env.GEMINI_API_KEY!,
   }),
 });

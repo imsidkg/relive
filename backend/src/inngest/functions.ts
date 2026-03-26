@@ -212,7 +212,9 @@ export const codeAgentFunction = inngest.createFunction(
       description: "An expert Coding Agent",
       system: PROMPT3,
       model: gemini({
-        model: "gemini-2.0-flash",
+        // NOTE: `gemini-2.0-flash` has been observed producing malformed tool calls
+        // with this agent-kit version. Use a stable tool-calling model instead.
+        model: "gemini-1.5-flash",
         apiKey: process.env.GEMINI_API_KEY!,
       }),
 
@@ -258,7 +260,7 @@ export const codeAgentFunction = inngest.createFunction(
 
     const network = createNetwork<AgentState>({
       name: "coding-agent-network",
-      agents: [codeAgent],
+      agents: [codeAgent, openAiCodeAgent],
       maxIter: 15,
       defaultState: state,
       router: async ({ network }) => {
@@ -278,14 +280,33 @@ export const codeAgentFunction = inngest.createFunction(
         break;
       }
     }
-    const result = await network.run(latestMessageContent, { state: state });
+    let result: Awaited<ReturnType<typeof network.run>>;
+    try {
+      result = await network.run(latestMessageContent, { state: state });
+    } catch (err) {
+      // If Gemini returns a malformed tool call, fall back to a more reliable model
+      // so the overall Inngest run still succeeds.
+      console.error("Primary agent failed; retrying with OpenAI agent", err);
+      const fallbackNetwork = createNetwork<AgentState>({
+        name: "coding-agent-network-fallback",
+        agents: [openAiCodeAgent],
+        maxIter: 15,
+        defaultState: state,
+        router: async ({ network }) => {
+          const summary = network.state.data.summary;
+          if (summary) return;
+          return openAiCodeAgent;
+        },
+      });
+      result = await fallbackNetwork.run(latestMessageContent, { state: state });
+    }
 
     const fragmentTitleGenerator = createAgent({
       name: "fragment-title-generator",
       description: "A fragment title generator",
       system: FRAGMENT_TITLE_PROMPT,
       model: gemini({
-        model: "gemini-2.0-flash",
+        model: "gemini-1.5-flash",
         apiKey: process.env.GEMINI_API_KEY!,
       }),
     });
@@ -295,7 +316,7 @@ export const codeAgentFunction = inngest.createFunction(
       description: "A response  generator",
       system: RESPONSE_PROMPT,
       model: gemini({
-        model: "gemini-2.0-flash",
+        model: "gemini-1.5-flash",
         apiKey: process.env.GEMINI_API_KEY!,
       }),
     });
