@@ -1,8 +1,16 @@
 # You can use most Debian-based base images
 FROM node:21-slim
 
-# Install curl
-RUN apt-get update && apt-get install -y curl && apt-get clean && rm -rf /var/lib/apt/lists/*
+# Install curl (+ deps for Bun installer)
+RUN apt-get update \
+  && apt-get install -y curl unzip ca-certificates \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+# Install Bun (so sandbox can run `bun add ...`)
+RUN curl -fsSL https://bun.sh/install | bash \
+  && ln -sf /root/.bun/bin/bun /usr/local/bin/bun \
+  && ln -sf /root/.bun/bin/bunx /usr/local/bin/bunx
 
 COPY compile_page.sh /compile_page.sh
 RUN chmod +x /compile_page.sh

@@ -60,6 +60,16 @@ export const codeAgentFunction = inngest.createFunction(
         });
 
         for (const message of messages) {
+          // Avoid poisoning the agent with prior malformed tool-call scaffolding
+          // (eg `print(default_api....)`), which tends to cause repeated failures.
+          if (
+            typeof message.content === "string" &&
+            (message.content.includes("default_api") ||
+              message.content.includes("```tool_code") ||
+              message.content.includes("```tool_outputs"))
+          ) {
+            continue;
+          }
           formattedMessages.push({
             type: "text",
             role: message.role === "ASSISTANCE" ? "assistant" : "user",
