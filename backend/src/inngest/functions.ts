@@ -332,7 +332,7 @@ export const codeAgentFunction = inngest.createFunction(
       description: "A fragment title generator",
       system: FRAGMENT_TITLE_PROMPT,
       model: gemini({
-        model: "gemini-1.5-flash",
+        model: "gemini-2.0-flash",
         apiKey: process.env.GEMINI_API_KEY!,
       }),
     });
@@ -342,17 +342,38 @@ export const codeAgentFunction = inngest.createFunction(
       description: "A response  generator",
       system: RESPONSE_PROMPT,
       model: gemini({
-        model: "gemini-1.5-flash",
+        model: "gemini-2.0-flash",
         apiKey: process.env.GEMINI_API_KEY!,
       }),
     });
 
-    const { output: fragmentTitleOutput } = await fragmentTitleGenerator.run(
-      result.state.data.summary,
-    );
-    const { output: responseOutput } = await responseGenerator.run(
-      result.state.data.summary,
-    );
+    let fragmentTitleOutput: Awaited<
+      ReturnType<typeof fragmentTitleGenerator.run>
+    >["output"] = [{ type: "text", role: "assistant", content: "Fragment" }];
+    let responseOutput: Awaited<ReturnType<typeof responseGenerator.run>>["output"] =
+      [
+        {
+          type: "text",
+          role: "assistant",
+          content: "Done. Your fragment is ready.",
+        },
+      ];
+    try {
+      const fragmentTitleResult = await fragmentTitleGenerator.run(
+        result.state.data.summary,
+      );
+      fragmentTitleOutput = fragmentTitleResult.output;
+    } catch (err) {
+      console.error("Fragment title generation failed", err);
+    }
+    try {
+      const responseResult = await responseGenerator.run(
+        result.state.data.summary,
+      );
+      responseOutput = responseResult.output;
+    } catch (err) {
+      console.error("Response generation failed", err);
+    }
 
     const generateFragmentTitle = () => {
       const output = fragmentTitleOutput[0];
