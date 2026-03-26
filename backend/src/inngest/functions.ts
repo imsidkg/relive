@@ -229,7 +229,7 @@ export const codeAgentFunction = inngest.createFunction(
       model: gemini({
         // NOTE: `gemini-2.0-flash` has been observed producing malformed tool calls
         // with this agent-kit version. Use a stable tool-calling model instead.
-        model: "gemini-1.5-flash",
+        model: "gemini-1.5-pro",
         apiKey: process.env.GEMINI_API_KEY!,
       }),
 
@@ -275,7 +275,7 @@ export const codeAgentFunction = inngest.createFunction(
 
     const network = createNetwork<AgentState>({
       name: "coding-agent-network",
-      agents: [openAiCodeAgent],
+      agents: [codeAgent],
       maxIter: 15,
       defaultState: state,
       router: async ({ network }) => {
@@ -284,7 +284,7 @@ export const codeAgentFunction = inngest.createFunction(
         if (summary) {
           return;
         }
-        return openAiCodeAgent;
+        return codeAgent;
       },
     });
 
@@ -299,21 +299,10 @@ export const codeAgentFunction = inngest.createFunction(
     try {
       result = await network.run(latestMessageContent, { state: state });
     } catch (err) {
-      // If Gemini returns a malformed tool call, fall back to a more reliable model
-      // so the overall Inngest run still succeeds.
-      console.error("Primary agent failed; retrying with OpenAI agent", err);
-      const fallbackNetwork = createNetwork<AgentState>({
-        name: "coding-agent-network-fallback",
-        agents: [openAiCodeAgent],
-        maxIter: 15,
-        defaultState: state,
-        router: async ({ network }) => {
-          const summary = network.state.data.summary;
-          if (summary) return;
-          return openAiCodeAgent;
-        },
-      });
-      result = await fallbackNetwork.run(latestMessageContent, { state: state });
+      // No OpenAI fallback (API key may not be present). Surface the error and let
+      // the caller retry, after logging details.
+      console.error("Agent run failed", err);
+      throw err;
     }
 
     const fragmentTitleGenerator = createAgent({
