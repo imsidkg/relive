@@ -317,12 +317,13 @@ export const codeAgentFunction = inngest.createFunction(
         break;
       }
     }
-    let result: Awaited<ReturnType<typeof network.run>>;
+    let summaryText = "";
+    let filesMap: Record<string, string> = {};
     try {
-      result = await network.run(latestMessageContent, { state: state });
+      const result = await network.run(latestMessageContent, { state: state });
+      summaryText = result.state.data.summary || "";
+      filesMap = (result.state.data.files || {}) as Record<string, string>;
     } catch (err) {
-      // No OpenAI fallback (API key may not be present). Surface the error and let
-      // the caller retry, after logging details.
       console.error("Agent run failed", err);
       throw err;
     }
@@ -360,7 +361,7 @@ export const codeAgentFunction = inngest.createFunction(
       ];
     try {
       const fragmentTitleResult = await fragmentTitleGenerator.run(
-        result.state.data.summary,
+        summaryText,
       );
       fragmentTitleOutput = fragmentTitleResult.output;
     } catch (err) {
@@ -368,7 +369,7 @@ export const codeAgentFunction = inngest.createFunction(
     }
     try {
       const responseResult = await responseGenerator.run(
-        result.state.data.summary,
+        summaryText,
       );
       responseOutput = responseResult.output;
     } catch (err) {
@@ -389,9 +390,7 @@ export const codeAgentFunction = inngest.createFunction(
       }
     };
 
-    const isErorr =
-      !result.state.data.summary ||
-      Object.keys(result.state.data.files || {}).length === 0;
+    const isErorr = !summaryText || Object.keys(filesMap || {}).length === 0;
 
     const sandboxUrl = await step.run("get-sandbox-url", async () => {
       const sandbox = await getSandbox(sandboxId);
@@ -421,7 +420,7 @@ export const codeAgentFunction = inngest.createFunction(
             create: {
               sandboxUrl: sandboxUrl,
               title: parseAgentOutput(fragmentTitleOutput),
-              file: result.state.data.files,
+              file: filesMap,
             },
           },
         },
@@ -431,7 +430,7 @@ export const codeAgentFunction = inngest.createFunction(
     return {
       url: sandboxUrl,
       title: "Fragment",
-      files: result.state.data.summary,
+      files: summaryText,
     };
   },
 );
